@@ -35,10 +35,7 @@ public static class CustomSettings
     public static DelegateType[] customDelegateList = 
     {        
         _DT(typeof(Action)),        
-        _DT(typeof(UnityEngine.Events.UnityAction)),       
-        
-        _DT(typeof(TestEventListener.OnClick)),
-        _DT(typeof(TestEventListener.VoidDelegate)),
+        _DT(typeof(UnityEngine.Events.UnityAction)),
     };
 
     //在这里添加你要导出注册到lua的类型列表

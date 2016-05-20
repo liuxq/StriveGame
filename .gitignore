@@ -24,3 +24,5 @@
 /Assets/StriveGame/Tolua/Source/Generate/*
 !/Assets/StriveGame/Tolua/Source/Generate/DelegateFactory.cs
 !/Assets/StriveGame/Tolua/Source/Generate/DelegateFactory.cs.meta
+!/Assets/StriveGame/Tolua/Source/Generate/LuaBinder.cs
+!/Assets/StriveGame/Tolua/Source/Generate/LuaBinder.cs.meta
