@@ -1,0 +1,26 @@
+# ----[ Visual Studio ]------- #
+*.suo
+*.user
+*.ncb
+*.plg
+*.opt
+*.aps
+*.aps
+*.sdf
+*.opensdf
+*.exp
+*.idb
+*.ilk
+*.exe
+*.pdb
+*.csproj
+*.sln
+
+# ---- [temp] ------- #
+/Temp
+/Library
+/obj
+/Assets/StreamingAssets
+/Assets/StriveGame/Tolua/Source/Generate/*
+!/Assets/StriveGame/Tolua/Source/Generate/DelegateFactory.cs
+!/Assets/StriveGame/Tolua/Source/Generate/DelegateFactory.cs.meta
