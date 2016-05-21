@@ -71,10 +71,9 @@ public class Packager {
         } else {
             HandleLuaFile();
         }
-        if (AppConst.ExampleMode) {
-            HandleExampleBundle();
-        }
+
         HandleResBundle();//资源打包
+
         string resPath = "Assets/" + AppConst.AssetDir;
         BuildAssetBundleOptions options = BuildAssetBundleOptions.DeterministicAssetBundle | 
                                           BuildAssetBundleOptions.UncompressedAssetBundle;
@@ -155,20 +154,6 @@ public class Packager {
             }
         }
         AssetDatabase.Refresh();
-    }
-
-    /// <summary>
-    /// 处理框架实例包
-    /// </summary>
-    static void HandleExampleBundle() {
-        string resPath = AppDataPath + "/" + AppConst.AssetDir + "/";
-        if (!Directory.Exists(resPath)) Directory.CreateDirectory(resPath);
-
-        AddBuildMap("prompt" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Examples/Builds/Prompt");
-        AddBuildMap("message" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Examples/Builds/Message");
-
-        //AddBuildMap("prompt_asset" + AppConst.ExtName, "*.png", "Assets/StriveGame/Examples/Textures/Prompt");
-        //AddBuildMap("shared_asset" + AppConst.ExtName, "*.png", "Assets/StriveGame/Examples/Textures/Shared");
     }
 
     /// <summary>
@@ -317,10 +302,6 @@ public class Packager {
 
     [MenuItem("LuaFramework/Build Protobuf-lua-gen File")]
     public static void BuildProtobufFile() {
-        if (!AppConst.ExampleMode) {
-            Debugger.LogError("若使用编码Protobuf-lua-gen功能，需要自己配置外部环境！！");
-            return;
-        }
         string dir = AppDataPath + "/Lua/3rd/pblua";
         paths.Clear(); files.Clear(); Recursive(dir);
 
