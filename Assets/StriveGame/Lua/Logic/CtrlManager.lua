@@ -2,6 +2,7 @@ require "Common/define"
 require "Controller/LoginCtrl"
 require "Controller/SelectAvatarCtrl"
 require "Controller/CreateAvatarCtrl"
+require "Controller/GameWorldCtrl"
 
 CtrlManager = {};
 local this = CtrlManager;
@@ -14,6 +15,7 @@ function CtrlManager.Init()
 	ctrlList[CtrlNames.Login] = LoginCtrl.New();
 	ctrlList[CtrlNames.SelectAvatar] = SelectAvatarCtrl.New();
 	ctrlList[CtrlNames.CreateAvatar] = CreateAvatarCtrl.New();
+	ctrlList[CtrlNames.GameWorld] = GameWorldCtrl.New();
 	return this;
 end
 

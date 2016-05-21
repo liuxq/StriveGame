@@ -13,6 +13,7 @@ function World.init()
 	Event.AddListener("set_position", World.set_position);
 	Event.AddListener("set_direction", World.set_direction);
 	Event.AddListener("set_name", World.set_name);
+	Event.AddListener("set_state", World.set_state);
 	Event.AddListener("updatePosition", World.updatePosition);
 
 end
@@ -21,6 +22,8 @@ function World.onAvatarEnterWorld( avatar )
 	if not avatar:isPlayer() then
 		return;
 	end
+
+
 	resMgr:LoadPrefab('Model', { 'player' }, function(objs)
 		local go = newObject(objs[0]);
 		avatar.renderObj = go;
@@ -41,8 +44,10 @@ function World.onAvatarEnterWorld( avatar )
 			joystick.gameObject:SetActive(true);
 		end
 	end);
-
+	
+	GameWorldCtrl.Awake();
 	SelectAvatarCtrl.Close();
+	
 end
 
 function World.onEnterWorld( entity )
@@ -121,6 +126,12 @@ end
 function World.set_name( entity , v)
 	if entity.character then
 		entity.character:SetName(v);
+	end
+end
+
+function World.set_state( entity , v)
+	if entity:isPlayer() then
+		GameWorldCtrl.OnDie(v);
 	end
 end
 

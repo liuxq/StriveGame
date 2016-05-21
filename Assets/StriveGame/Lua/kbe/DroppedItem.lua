@@ -1,9 +1,9 @@
-require "KbePlugins/Entity"
+require "Kbe/Interface/GameObject"
 
 KBEngineLua.DroppedItem = {
 };
 
-KBEngineLua.DroppedItem = KBEngineLua.Entity:New(KBEngineLua.DroppedItem);--继承
+KBEngineLua.DroppedItem = KBEngineLua.GameObject:New(KBEngineLua.DroppedItem);--继承
 
 function KBEngineLua.DroppedItem:New(me) 
     me = me or {};

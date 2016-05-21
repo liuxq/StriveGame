@@ -1,10 +1,11 @@
+Event = require 'events'
 require "Logic/CtrlManager"
 require "Common/functions"
 require "Controller/LoginCtrl"
 require "KbePlugins/kbengine"
 require "Kbe/Account"
 require "Logic/World"
-Event = require 'events'
+
 
 
 --管理器--

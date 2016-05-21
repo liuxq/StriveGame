@@ -1,10 +1,10 @@
-require "KbePlugins/Entity"
+require "Kbe/Interface/GameObject"
 
 KBEngineLua.Account = {
 	avatars = {},
 };
 
-KBEngineLua.Account = KBEngineLua.Entity:New(KBEngineLua.Account);--继承
+KBEngineLua.Account = KBEngineLua.GameObject:New(KBEngineLua.Account);--继承
 
 function KBEngineLua.Account:New(me) 
     me = me or {};

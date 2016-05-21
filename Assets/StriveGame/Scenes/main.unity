@@ -675,17 +675,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLevel: 0
-  isMultiThreads: 0
-  ip: 115.28.183.54
-  port: 20013
-  clientType: 7
-  persistentDataPath: plication.persistentDataPathth
-  syncPlayer: 1
-  threadUpdateHZ: 10
-  SEND_BUFFER_MAX: 1460
-  RECV_BUFFER_MAX: 1460
-  useAliasEntityID: 1
-  isOnInitCallPropertysSetMethods: 1
 --- !u!4 &1614297449
 Transform:
   m_ObjectHideFlags: 0

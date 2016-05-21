@@ -111,8 +111,8 @@ KBEngineLua.Entity.cellCall = function(self, arguments)
 	end
 	
 	local method = KBEngineLua.moduledefs[self.className].cell_methods[arguments[1]];
-	local methodID = method[0];
-	local args = method[3];
+	local methodID = method[1];
+	local args = method[4];
 	
 	if(#arguments - 1 ~= #args) then
 		log("KBEngineLua.Entity::cellCall: args(" .. (#arguments - 1) .. "~= " .. #args .. ") size is error!");  
@@ -128,7 +128,7 @@ KBEngineLua.Entity.cellCall = function(self, arguments)
 		end
 	end
 	
-	self.cell.postMail(nil);
+	self.cell:postMail(nil);
 end
 	
 KBEngineLua.Entity.enterWorld = function(self)
@@ -171,35 +171,6 @@ end
 KBEngineLua.Entity.onLeaveSpace = function(self)
 end
 
-KBEngineLua.Entity.set_position = function(self, old)
-	--log(self.className .. "::set_position: " .. old.x ..old.y ..old.z);  
-	
-	if(self:isPlayer()) then
-		KBEngineLua.entityServerPos.x = self.position.x;
-		KBEngineLua.entityServerPos.y = self.position.y;
-		KBEngineLua.entityServerPos.z = self.position.z;
-	end
-	
-	--KBEngine.Event.fire("set_position", self);
-end
 
 KBEngineLua.Entity.onUpdateVolatileData = function(self)
-end
-
-KBEngineLua.Entity.set_direction = function(self, old)
-	--log(self.className .. "::set_direction: " .. old.x ..old.y ..old.z);  
-			
-	self.direction.x = self.direction.x * 360 / (Mathf.PI * 2);
-	self.direction.y = self.direction.y * 360 / (Mathf.PI * 2);
-	self.direction.z = self.direction.z * 360 / (Mathf.PI * 2);
-	
-	--log(className + "::set_direction: " + old + " => " + v); 
-	
-	-- if(inWorld)
-	-- 	Event.fireOut("set_direction", new object[]{this});
-end
-
-KBEngineLua.Entity.set_name = function(self, old)
-	local v = self.name;
-	Event.Brocast("set_name", self, v);
 end

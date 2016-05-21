@@ -1,11 +1,11 @@
-require "KbePlugins/Entity"
+require "Kbe/Interface/GameObject"
 
 KBEngineLua.Avatar = {
 	itemDict = {},
     equipItemDict = {},
 };
 
-KBEngineLua.Avatar = KBEngineLua.Entity:New(KBEngineLua.Avatar);--继承
+KBEngineLua.Avatar = KBEngineLua.GameObject:New(KBEngineLua.Avatar);--继承
 
 function KBEngineLua.Avatar:New(me) 
     me = me or {};
@@ -38,7 +38,7 @@ function KBEngineLua.Avatar:onEnterWorld()
 end
 
 function KBEngineLua.Avatar:relive(type)
-    self:cellCall("relive", {type});
+    self:cellCall({"relive", type});
 end
 
 function KBEngineLua.Avatar:sendChatMessage(msg)

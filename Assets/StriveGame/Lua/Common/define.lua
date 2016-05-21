@@ -3,12 +3,14 @@ CtrlNames = {
 	Login = "LoginCtrl",
 	SelectAvatar = "SelectAvatarCtrl",
 	CreateAvatar = "CreateAvatarCtrl",
+	GameWorld = "GameWorldCtrl",
 }
 
 PanelNames = {
 	"LoginPanel",	
 	"SelectAvatarPanel",
 	"CreateAvatarPanel",
+	"GameWorldPanel",
 }
 
 --协议类型--
