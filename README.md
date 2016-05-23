@@ -9,7 +9,7 @@
 * 使用kbengine-0.8.2版本，服务器脚本在：[MyGameServerAssets](https://github.com/liuxq/MyGameServerAssets.git)
 
 ###### lua代码结构说明   
-* ![ui-demo](/structure.png)
+![ui-demo](/structure.png)
 ###### ip、port等配置位置
 ![ui-demo2](/config.png)
 ###### 游戏截图
