@@ -25,6 +25,7 @@ function GameWorldCtrl.OnCreate(obj)
 	GameWorld = gameObject:GetComponent('LuaBehaviour');
 	--GameWorld:AddClick(GameWorldPanel.btnGameWorld, this.OnGameWorld);
 	GameWorld:AddClick(GameWorldPanel.btnRelive, this.OnRelive);
+	GameWorld:AddClick(GameWorldPanel.btnClose, this.OnClose);
 
 	logWarn("Start lua--->>"..gameObject.name);
 	Event.AddListener("OnDie", this.OnDie);
@@ -43,6 +44,11 @@ function GameWorldCtrl.OnRelive(go)
 	if p ~= nil then
 		p:relive(1);
 	end
+end
+
+--关闭游戏--
+function GameWorldCtrl.OnClose(go)
+	UnityEngine.Application.Quit();
 end
 
 --关闭事件--

@@ -19,7 +19,7 @@ function GameWorldPanel.InitPanel()
 	this.btnSend = transform:FindChild("Button_send").gameObject;
 	this.PanelDie = transform:FindChild("Panel_die").gameObject;
 	this.btnRelive = transform:FindChild("Panel_die/Button_relive").gameObject;
-	log("lxqPanel")
+	this.btnClose = transform:FindChild("Button_close").gameObject;
 end
 
 --单击事件--

@@ -117,7 +117,6 @@ public static class CustomSettings
         _GT(typeof(Util)),
         _GT(typeof(AppConst)),
         _GT(typeof(LuaHelper)),
-        _GT(typeof(ByteBuffer)),
         _GT(typeof(LuaBehaviour)),
 
         _GT(typeof(GameManager)),
@@ -126,7 +125,6 @@ public static class CustomSettings
         _GT(typeof(SoundManager)),
         _GT(typeof(TimerManager)),
         _GT(typeof(ThreadManager)),
-        _GT(typeof(NetworkManager)),
         _GT(typeof(ResourceManager)),		  
 
         //kbengine

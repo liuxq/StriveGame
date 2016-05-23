@@ -15,7 +15,7 @@ require "Kbe/NPC"
 require "Kbe/DroppedItem"
 
 -----------------可配置信息---------------
-KBEngineLua.ip = "115.28.183.54";
+KBEngineLua.ip = "127.0.0.1";
 KBEngineLua.port = "20013";
 -- Mobile(Phone, Pad)	= 1,
 -- Windows Application program	= 2,

@@ -42,14 +42,6 @@ namespace LuaFramework {
         }
 
         /// <summary>
-        /// 网络管理器
-        /// </summary>
-        public static NetworkManager GetNetManager()
-        {
-            return AppFacade.Instance.GetManager<NetworkManager>(ManagerName.Network);
-        }
-
-        /// <summary>
         /// 音乐管理器
         /// </summary>
         public static SoundManager GetSoundManager()

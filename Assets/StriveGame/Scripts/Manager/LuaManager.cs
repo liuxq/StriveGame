@@ -84,6 +84,8 @@ namespace LuaFramework {
                 loader.AddBundle("Lua/Lua_Controller.unity3d");
                 loader.AddBundle("Lua/Lua_Misc.unity3d");
                 loader.AddBundle("Lua/lua_kbe.unity3d");
+                loader.AddBundle("Lua/lua_kbe_Interface.unity3d");
+                loader.AddBundle("Lua/lua_KbePlugins.unity3d");
 
                 loader.AddBundle("Lua/Lua_protobuf.unity3d");
                 loader.AddBundle("Lua/Lua_3rd_cjson.unity3d");

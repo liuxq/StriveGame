@@ -7,7 +7,6 @@ public class Base : MonoBehaviour {
     private AppFacade m_Facade;
     private LuaManager m_LuaMgr;
     private ResourceManager m_ResMgr;
-    private NetworkManager m_NetMgr;
     private SoundManager m_SoundMgr;
     private TimerManager m_TimerMgr;
     private ThreadManager m_ThreadMgr;
@@ -56,15 +55,6 @@ public class Base : MonoBehaviour {
                 m_ResMgr = facade.GetManager<ResourceManager>(ManagerName.Resource);
             }
             return m_ResMgr;
-        }
-    }
-
-    protected NetworkManager NetManager {
-        get {
-            if (m_NetMgr == null) {
-                m_NetMgr = facade.GetManager<NetworkManager>(ManagerName.Network);
-            }
-            return m_NetMgr;
         }
     }
 

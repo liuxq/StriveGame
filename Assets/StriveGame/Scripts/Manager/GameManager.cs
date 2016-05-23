@@ -233,8 +233,6 @@ namespace LuaFramework {
         void OnInitialize() {
             LuaManager.InitStart();
             LuaManager.DoFile("Logic/Game");         //加载游戏
-            //LuaManager.DoFile("Logic/Network");      //加载网络
-            NetManager.OnInit();                     //初始化网络
             Util.CallMethod("Game", "OnInitOK");     //初始化完成
 
             KBEngine.Event.fireIn("onResourceInitFinish");
@@ -245,10 +243,8 @@ namespace LuaFramework {
         /// 析构函数
         /// </summary>
         void OnDestroy() {
-            if (NetManager != null) {
-                NetManager.Unload();
-            }
             if (LuaManager != null) {
+                LuaFramework.Util.CallMethod("KBEngineLua", "Destroy");
                 LuaManager.Close();
             }
             Debug.Log("~GameManager was destroyed");
