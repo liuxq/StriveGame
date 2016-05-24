@@ -47,6 +47,15 @@ function Character:SetName( name )
     end
 end
 
+function Character:OnState( v )
+	--状态
+	if v == 1 then
+		self.animator:Play("Dead");
+	else
+		self.animator:Play("Idle");
+	end
+end
+
 function Character:StartUpdate()
 	FixedUpdateBeat:Add(self.FixedUpdate, self);
 	UpdateBeat:Add(self.Update, self);

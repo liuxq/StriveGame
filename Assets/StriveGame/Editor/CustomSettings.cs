@@ -113,7 +113,8 @@ public static class CustomSettings
         _GT(typeof(Text)),
         _GT(typeof(InputField)),
         _GT(typeof(Toggle)),
-
+        _GT(typeof(Scrollbar)),
+        
         _GT(typeof(Util)),
         _GT(typeof(AppConst)),
         _GT(typeof(LuaHelper)),

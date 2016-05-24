@@ -130,6 +130,9 @@ function World.set_name( entity , v)
 end
 
 function World.set_state( entity , v)
+	if entity.character then
+		entity.character:OnState(v);
+	end
 	if entity:isPlayer() then
 		GameWorldCtrl.OnDie(v);
 	end

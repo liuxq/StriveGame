@@ -26,9 +26,12 @@ function GameWorldCtrl.OnCreate(obj)
 	--GameWorld:AddClick(GameWorldPanel.btnGameWorld, this.OnGameWorld);
 	GameWorld:AddClick(GameWorldPanel.btnRelive, this.OnRelive);
 	GameWorld:AddClick(GameWorldPanel.btnClose, this.OnClose);
+	GameWorld:AddClick(GameWorldPanel.btnSend, this.OnSendMessage);
 
 	logWarn("Start lua--->>"..gameObject.name);
+
 	Event.AddListener("OnDie", this.OnDie);
+	Event.AddListener("ReceiveChatMessage", this.ReceiveChatMessage);
 
 	local p = KBEngineLua.player();
 	if p ~= nil then
@@ -51,6 +54,14 @@ function GameWorldCtrl.OnClose(go)
 	UnityEngine.Application.Quit();
 end
 
+--发送聊天
+function GameWorldCtrl.OnSendMessage(go)
+	local p = KBEngineLua.player();
+	if p ~= nil and string.len(GameWorldPanel.input_content.text) > 0 then
+		p:sendChatMessage(GameWorldPanel.input_content.text);
+	end
+end
+
 --关闭事件--
 function GameWorldCtrl.Close()
 	--panelMgr:ClosePanel(CtrlNames.Login);
@@ -66,4 +77,22 @@ function GameWorldCtrl.OnDie(v)
 	else
 		GameWorldPanel.PanelDie:SetActive(false);
 	end
+end
+
+--接受信息
+function GameWorldCtrl.ReceiveChatMessage(msg)
+	local text = GameWorldPanel.textContent:GetComponent("Text");
+
+	if (string.len(text.text) > 0) then
+        text.text = text.text .. "\n" .. msg;
+    else
+        text.text = text.text .. msg;
+    end
+
+    if (text.preferredHeight + 30 > 67) then
+        GameWorldPanel.textContent:GetComponent("RectTransform").sizeDelta = Vector2.New(0, text.preferredHeight);
+    end
+
+    GameWorldPanel.sb_vertical.value = 0;
+    GameWorldPanel.input_content.text = "";
 end

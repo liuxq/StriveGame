@@ -42,6 +42,10 @@ function KBEngineLua.Avatar:relive(type)
 end
 
 function KBEngineLua.Avatar:sendChatMessage(msg)
-    local name = self:getDefinedProperty("name");
-    self:baseCall("sendChatMessage", {name + ": " + msg});
+    self:baseCall({"sendChatMessage", self.name .. ": " .. msg});
+end
+
+-------client method-----------------------------------
+function KBEngineLua.Avatar:ReceiveChatMessage(msg)
+    Event.Brocast("ReceiveChatMessage", msg);
 end

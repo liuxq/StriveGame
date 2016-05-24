@@ -20,6 +20,9 @@ function GameWorldPanel.InitPanel()
 	this.PanelDie = transform:FindChild("Panel_die").gameObject;
 	this.btnRelive = transform:FindChild("Panel_die/Button_relive").gameObject;
 	this.btnClose = transform:FindChild("Button_close").gameObject;
+	this.textContent = transform:FindChild("Scroll View/Viewport/trans_content").gameObject;
+	this.sb_vertical = transform:FindChild("Scroll View/Scrollbar Vertical"):GetComponent("Scrollbar");
+	this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
 end
 
 --单击事件--
