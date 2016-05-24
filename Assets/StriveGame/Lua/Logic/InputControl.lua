@@ -18,12 +18,22 @@ function InputControl.OnEnable( )
 	else
 		EasyJoystick.On_JoystickMove = InputControl.OnJoystickMove;
 	end
+
+    if EasyJoystick.On_JoystickMoveEnd then
+        EasyJoystick.On_JoystickMoveEnd = EasyJoystick.On_JoystickMoveEnd + InputControl.OnJoystickMoveEnd;
+    else
+        EasyJoystick.On_JoystickMoveEnd = InputControl.OnJoystickMoveEnd;
+    end
 end
 
 function InputControl.OnDisable( )
 	if EasyJoystick.On_JoystickMove then
 		EasyJoystick.On_JoystickMove = EasyJoystick.On_JoystickMove - InputControl.OnJoystickMove;
 	end
+
+    if EasyJoystick.On_JoystickMoveEnd then
+        EasyJoystick.On_JoystickMoveEnd = EasyJoystick.On_JoystickMoveEnd - InputControl.OnJoystickMoveEnd;
+    end
 end
 
 function InputControl.OnJoystickMove( move )
@@ -49,5 +59,13 @@ function InputControl.OnJoystickMove( move )
             this.animator.speed = 2.0;
             this.animator:SetFloat("Speed", 1.0);
         end
+    end
+end
+
+function InputControl.OnJoystickMoveEnd( move )
+    if (move.joystickName == "GameJoystick") then
+        --播放休闲动画
+        this.animator.speed = 1.0;
+        this.animator:SetFloat("Speed", 0.0);
     end
 end

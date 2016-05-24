@@ -10,16 +10,16 @@ Character = {
 };
 
 function Character:SetPosition( pos )
-	m_position = pos:Clone();
+	self.m_position = pos:Clone();
 	if self.entity.renderObj then
-		self.entity.renderObj.transform.position = m_position;
+		self.entity.renderObj.transform.position = self.m_position;
 	end
 end
 
 function Character:SetEulerAngles( angles )
-	m_eulerAngles = angles:Clone();
+	self.m_eulerAngles = angles:Clone();
 	if self.entity.renderObj then
-		self.entity.renderObj.transform.eulerAngles = m_eulerAngles;
+		self.entity.renderObj.transform.eulerAngles = self.m_eulerAngles;
 	end
 end
 
@@ -35,6 +35,7 @@ function Character:Init( entity )
 	self:StartUpdate();
 	self.headName = entity.renderObj.transform:Find("Canvas/Text"):GetComponent("Text");
 	self.headNameCanvasTrans = entity.renderObj.transform:Find("Canvas").transform;
+	self.animator = entity.renderObj.transform:GetComponent("Animator");
 	self.cameraTransform = UnityEngine.Camera.main.transform;
 end
 
@@ -61,27 +62,39 @@ function Character:Update()
 	end
 
 	--更新位置和方向
+	local flag = false;
 	if self.m_destDirection then
 		if not self.m_eulerAngles then
-			self.m_eulerAngles = self.m_destDirection:Clone();
+			self:SetEulerAngles( self.m_destDirection );
 		end
 
 		if Vector3.Distance(self.m_eulerAngles, self.m_destDirection) > 0.0004 then
 			self:SetEulerAngles( self.m_destDirection );
+			flag = true;
 		end
 	end
 
 	if self.m_destPosition then
 		if not self.m_position then
-			self.m_position = self.m_destPosition:Clone();
+			self:SetPosition(self.m_destPosition);
 		end
 
 		local dist = Vector3.Distance(self.m_position, self.m_destPosition)
 		if dist > 0.01 then
 			--self:SetPosition(Vector3.Lerp(self.m_position, self.m_destPosition, 1));--100 * UnityEngine.Time.deltaTime));
 			self:SetPosition(self.m_destPosition);
+			flag = true;
 		end
 	end
+
+	if flag then
+        self.animator.speed = 2.0;
+        self.animator:SetFloat("Speed", 1.0);
+    else
+        self.animator.speed = 1.0;
+        self.animator:SetFloat("Speed", 0.0);
+   	end
+
 end
 
 function Character:FixedUpdate()

@@ -548,7 +548,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enable: 1
   isActivated: 1
-  showDebugRadius: 1
+  showDebugRadius: 0
   useFixedUpdate: 0
   isUseGuiLayout: 1
   dynamicJoystick: 0
