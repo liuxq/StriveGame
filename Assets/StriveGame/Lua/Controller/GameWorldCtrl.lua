@@ -58,7 +58,7 @@ end
 function GameWorldCtrl.OnSendMessage(go)
 	local p = KBEngineLua.player();
 	if p ~= nil and string.len(GameWorldPanel.input_content.text) > 0 then
-		p:sendChatMessage(GameWorldPanel.input_content.text);
+		Event.Brocast("sendChatMessage", p, GameWorldPanel.input_content.text);
 	end
 end
 

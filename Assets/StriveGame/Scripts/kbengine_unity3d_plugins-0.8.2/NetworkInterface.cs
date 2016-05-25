@@ -127,7 +127,14 @@
 			}
 
 			// Security.PrefetchSocketPolicy(ip, 843);
-			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress[] hostAddresses = Dns.GetHostAddresses(ip);
+            IPAddress[] outIPs = hostAddresses;
+            AddressFamily addressFamily = AddressFamily.InterNetwork;
+            if (Socket.OSSupportsIPv6 && this.IsHaveIpV6Address(hostAddresses, ref outIPs))
+            {
+                addressFamily = AddressFamily.InterNetworkV6;
+            }
+            _socket = new Socket(addressFamily, SocketType.Stream, ProtocolType.Tcp);
             _socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, NetworkInterface.RECV_BUFFER_MAX * 2);
 			
 			ConnectState state = new ConnectState();
@@ -153,7 +160,27 @@
 				Event.fireIn("_onConnectStatus", new object[]{state});
             }
 		}
-        
+
+        private bool IsHaveIpV6Address(IPAddress[] IPs, ref IPAddress[] outIPs)
+        {
+            int length = 0;
+            for (int index = 0; index < IPs.Length; ++index)
+            {
+                if (AddressFamily.InterNetworkV6.Equals((object)IPs[index].AddressFamily))
+                    ++length;
+            }
+            if (length <= 0)
+                return false;
+            outIPs = new IPAddress[length];
+            int num = 0;
+            for (int index = 0; index < IPs.Length; ++index)
+            {
+                if (AddressFamily.InterNetworkV6.Equals((object)IPs[index].AddressFamily))
+                    outIPs[num++] = IPs[index];
+            }
+            return true;
+        }
+
         public void close()
         {
            if(_socket != null)

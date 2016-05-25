@@ -39,3 +39,10 @@ function KBEngineLua.Entity:set_state(old)
 	local v = self.state;
 	Event.Brocast("set_state", self, v);
 end
+
+function KBEngineLua.Entity:recvDamage(attackerID, skillID, damageType, damage)
+--Dbg.DEBUG_MSG(className + "::recvDamage: attackerID=" + attackerID + ", skillID=" + skillID + ", damageType=" + damageType + ", damage=" + damage);
+			
+	local entity = KBEngineLua.findEntity(attackerID);
+	Event.Brocast("recvDamage", self, entity, skillID, damageType, damage);
+end

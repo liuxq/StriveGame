@@ -15,6 +15,7 @@ function World.init()
 	Event.AddListener("set_name", World.set_name);
 	Event.AddListener("set_state", World.set_state);
 	Event.AddListener("updatePosition", World.updatePosition);
+	Event.AddListener("recvDamage", World.recvDamage)
 
 end
 
@@ -140,4 +141,8 @@ end
 
 function World.updatePosition( entity )
 	entity.character.m_destPosition = entity.position;
+end
+
+function World.recvDamage( receiver, attacker, skillID, damageType, damage )
+	log("damage:"..damage);
 end

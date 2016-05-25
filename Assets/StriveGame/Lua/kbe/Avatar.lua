@@ -22,7 +22,6 @@ function KBEngineLua.Avatar:__init__( )
     end
 end
 
-
 function KBEngineLua.Avatar:updatePlayer(x, y, z, yaw)
     self.position.x = x;
     self.position.y = y;
