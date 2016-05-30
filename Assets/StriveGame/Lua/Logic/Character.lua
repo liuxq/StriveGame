@@ -1,27 +1,9 @@
-Character = {
-	entityName = nil,
-	entity = nil,
-	m_destDirection = nil,
-	m_destPosition = nil,
-	m_position = nil,
-	m_eulerAngles = nil,
+require "Logic/GameEntity"
 
-	m_rotation = nil,
+Character = {
 };
 
-function Character:SetPosition( pos )
-	self.m_position = pos:Clone();
-	if self.entity.renderObj then
-		self.entity.renderObj.transform.position = self.m_position;
-	end
-end
-
-function Character:SetEulerAngles( angles )
-	self.m_eulerAngles = angles:Clone();
-	if self.entity.renderObj then
-		self.entity.renderObj.transform.eulerAngles = self.m_eulerAngles;
-	end
-end
+Character = GameEntity:New(Character);--继承
 
 function Character:New( me )
  	me = me or {};
@@ -39,14 +21,6 @@ function Character:Init( entity )
 	self.cameraTransform = UnityEngine.Camera.main.transform;
 end
 
-function Character:SetName( name )
-	--绘制头顶文字
-	self.entityName = name;
-    if self.headName ~= nil then
-        self.headName.text = self.entityName;
-    end
-end
-
 function Character:OnState( v )
 	--状态
 	if v == 1 then
@@ -54,11 +28,6 @@ function Character:OnState( v )
 	else
 		self.animator:Play("Idle");
 	end
-end
-
-function Character:StartUpdate()
-	FixedUpdateBeat:Add(self.FixedUpdate, self);
-	UpdateBeat:Add(self.Update, self);
 end
 
 function Character:Update()
@@ -115,13 +84,4 @@ function Character:FixedUpdate()
 		Event.Brocast("updatePlayer", self.entity, go.transform.position.x,
 	            go.transform.position.y, go.transform.position.z, go.transform.rotation.eulerAngles.y);   
 	end
-end
-
-function Character:Destroy()
-	FixedUpdateBeat:Remove(self.FixedUpdate, self);
-	UpdateBeat:Remove(self.Update, self);
-	self.entity = nil;
-	self.headName = nil;
-	self.headNameCanvasTrans = nil;
-	self.cameraTransform = nil;
 end

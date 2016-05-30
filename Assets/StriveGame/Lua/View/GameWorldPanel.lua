@@ -23,6 +23,8 @@ function GameWorldPanel.InitPanel()
 	this.textContent = transform:FindChild("Scroll View/Viewport/trans_content").gameObject;
 	this.sb_vertical = transform:FindChild("Scroll View/Scrollbar Vertical"):GetComponent("Scrollbar");
 	this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
+	this.btnResetView = transform:FindChild("Button_resetView").gameObject;
+	
 end
 
 --单击事件--
