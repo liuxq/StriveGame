@@ -24,6 +24,9 @@ function GameWorldPanel.InitPanel()
 	this.sb_vertical = transform:FindChild("Scroll View/Scrollbar Vertical"):GetComponent("Scrollbar");
 	this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
 	this.btnResetView = transform:FindChild("Button_resetView").gameObject;
+	this.btnSkill1 = transform:FindChild("Button_skill1").gameObject;
+	this.btnSkill2 = transform:FindChild("Button_skill2").gameObject;
+	this.btnSkill3 = transform:FindChild("Button_skill3").gameObject;
 	
 end
 

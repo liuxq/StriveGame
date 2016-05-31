@@ -4,6 +4,8 @@ CtrlNames = {
 	SelectAvatar = "SelectAvatarCtrl",
 	CreateAvatar = "CreateAvatarCtrl",
 	GameWorld = "GameWorldCtrl",
+	PlayerHead = "PlayerHeadCtrl",
+	TargetHead = "TargetHeadCtrl",
 }
 
 PanelNames = {
@@ -11,6 +13,8 @@ PanelNames = {
 	"SelectAvatarPanel",
 	"CreateAvatarPanel",
 	"GameWorldPanel",
+	"PlayerHeadPanel",
+	"TargetHeadPanel",
 }
 
 --协议类型--

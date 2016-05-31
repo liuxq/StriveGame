@@ -2,7 +2,8 @@ require "Logic/CameraFollow"
 require "Logic/InputControl"
 require "Logic/Character"
 
-World = {};
+World = {
+};
 
 function World.init()
 	Event.AddListener("onAvatarEnterWorld", World.onAvatarEnterWorld);
@@ -47,6 +48,9 @@ function World.onAvatarEnterWorld( avatar )
 	end);
 	
 	GameWorldCtrl.Awake();
+	PlayerHeadCtrl.Awake();
+	TargetHeadCtrl.Awake();
+	
 	SelectAvatarCtrl.Close();
 	
 end

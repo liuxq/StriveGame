@@ -135,6 +135,7 @@ public static class CustomSettings
         _GT(typeof(KBEngine.PersistentInofs)),
         _GT(typeof(EasyJoystick)),
         _GT(typeof(MovingJoystick)),
+        _GT(typeof(NcEffectFlying)),
         
     };
 
