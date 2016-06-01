@@ -1,6 +1,7 @@
 require "Logic/CameraFollow"
 require "Logic/InputControl"
 require "Logic/Character"
+require "Logic/SelectControl"
 
 World = {
 };
@@ -52,6 +53,8 @@ function World.onAvatarEnterWorld( avatar )
 	TargetHeadCtrl.Awake();
 	
 	SelectAvatarCtrl.Close();
+
+	UpdateBeat:Add(SelectControl.Update);
 	
 end
 
