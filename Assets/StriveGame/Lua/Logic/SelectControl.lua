@@ -4,8 +4,15 @@ SelectControl = {};
 function SelectControl.Update()
 	if UnityEngine.Input.GetMouseButtonDown(0) then
         local ray = UnityEngine.Camera.main:ScreenPointToRay(UnityEngine.Input.mousePosition);
-        local hit = nil;
-        if UnityEngine.Physics.Raycast(ray, hit, 100.0, bit.lshift(1,LayerMask.NameToLayer("CanAttack"))) then
+
+        local isHit, hit = UnityEngine.Physics.Raycast(ray, nil, 100.0, bit.lshift(1,LayerMask.NameToLayer("CanAttack")));
+        if isHit then
+            for i,v in pairs(KBEngineLua.entities) do
+            	if v.renderObj == hit.collider.gameObject then
+            		TargetHeadCtrl.target = v;
+            		TargetHeadCtrl.UpdateTargetUI();
+            	end
+            end
             -- UI_Target ui_target = World.instance.getUITarget();
             -- ui_target.GE_target = hit.collider.GetComponent<GameEntity>();
             -- ui_target.UpdateTargetUI();
@@ -20,7 +27,6 @@ function SelectControl.Update()
             --         avatar.dialog(id, dialogID);
             --     end
             -- end
-            log("lxq");
         end
 	end
 end

@@ -27,18 +27,45 @@ function PlayerHeadCtrl.OnCreate(obj)
 	PlayerHead = gameObject:GetComponent('LuaBehaviour');
 	--PlayerHead:AddClick(PlayerHeadPanel.btnPlayerHead, this.OnPlayerHead);
 	--PlayerHead:AddClick(PlayerHeadPanel.btnCancel, this.OnCancel);
-
 	logWarn("Start lua--->>"..gameObject.name);
 
+	this.target = KBEngineLua.player();
+	this.UpdateTargetUI();
 end
 
 
+function  PlayerHeadCtrl.SetHPMax(v)
+    PlayerHeadPanel.sliderHp.maxValue = v;
+    PlayerHeadPanel.textHpDetail.text = PlayerHeadPanel.sliderHp.value .. "/" .. PlayerHeadPanel.sliderHp.maxValue;
+
+end
+
+function  PlayerHeadCtrl.SetHP(v)
+    PlayerHeadPanel.sliderHp.value = v;
+    PlayerHeadPanel.textHpDetail.text = PlayerHeadPanel.sliderHp.value .. "/" .. PlayerHeadPanel.sliderHp.maxValue;
+end
+
+function  PlayerHeadCtrl.SetName(v)
+    PlayerHeadPanel.textTargetName.text = v;
+end
+
+function  PlayerHeadCtrl.Deactivate()
+    gameObject:SetActive(false);
+end
+
+function  PlayerHeadCtrl.Activate()
+    gameObject:SetActive(true);
+end
+
+function PlayerHeadCtrl.UpdateTargetUI()
+    this.Activate();
+    this.SetHPMax(this.target.HP_Max);
+    this.SetHP(this.target.HP);
+    this.SetName(this.target.name);
+end
+
 --关闭事件--
 function PlayerHeadCtrl.Close()
-	--KBEEvent.deregisterOut("onConnectStatus", this.onConnectStatus);
-	--KBEEvent.deregisterOut("onPlayerHeadSuccessfully", this.onCreateAvatarSuccessfully);
-    --KBEEvent.deregisterOut("onCreateAvatarFailed", this.onCreateAvatarFailed);
-
 	--panelMgr:ClosePanel(CtrlNames.CreateAvatar);
 	destroy(gameObject);
 end

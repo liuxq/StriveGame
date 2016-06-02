@@ -16,8 +16,8 @@ end
 
 --初始化面板--
 function TargetHeadPanel.InitPanel()
-	this.sliderHp = transform:FindChild("Slider_targetHP").gameObject;
-	this.textTargetName = transform:FindChild("Text_targetName").gameObject;	
+	this.sliderHp = transform:FindChild("Slider_targetHP"):GetComponent("Slider");
+	this.textTargetName = transform:FindChild("Text_targetName"):GetComponent("Text");	
 end
 
 --单击事件--

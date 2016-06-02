@@ -40,6 +40,11 @@ function KBEngineLua.Entity:set_state(old)
 	Event.Brocast("set_state", self, v);
 end
 
+function KBEngineLua.Entity:set_HP(old)
+	local v = self.HP;
+	--Event.Brocast("set_state", self, v);
+end
+
 function KBEngineLua.Entity:recvDamage(attackerID, skillID, damageType, damage)
 --Dbg.DEBUG_MSG(className + "::recvDamage: attackerID=" + attackerID + ", skillID=" + skillID + ", damageType=" + damageType + ", damage=" + damage);
 			

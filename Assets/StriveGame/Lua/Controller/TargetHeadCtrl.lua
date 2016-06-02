@@ -17,7 +17,6 @@ function TargetHeadCtrl.Awake()
 	logWarn("TargetHeadCtrl.Awake--->>");
 	panelMgr:CreatePanel('TargetHead', this.OnCreate);
 
-	--Event.AddListener("onTargetHeadResult", this.onTargetHeadResult);
 end
 
 --启动事件--
@@ -25,19 +24,40 @@ function TargetHeadCtrl.OnCreate(obj)
 	gameObject = obj;
 	gameObject.transform.position = Vector3.New(87.5, 128, 0);
 	TargetHead = gameObject:GetComponent('LuaBehaviour');
-	--TargetHead:AddClick(TargetHeadPanel.btnTargetHead, this.OnTargetHead);
-	--TargetHead:AddClick(TargetHeadPanel.btnCancel, this.OnCancel);
+
+	this.Deactivate();
 
 	logWarn("Start lua--->>"..gameObject.name);
 end
 
+function  TargetHeadCtrl.SetHPMax(v)
+    TargetHeadPanel.sliderHp.maxValue = v;
+end
+
+function  TargetHeadCtrl.SetHP(v)
+    TargetHeadPanel.sliderHp.value = v;
+end
+
+function  TargetHeadCtrl.SetName(v)
+    TargetHeadPanel.textTargetName.text = v;
+end
+
+function  TargetHeadCtrl.Deactivate()
+    gameObject:SetActive(false);
+end
+
+function  TargetHeadCtrl.Activate()
+    gameObject:SetActive(true);
+end
+
+function TargetHeadCtrl.UpdateTargetUI()
+    this.Activate();
+    this.SetHPMax(this.target.HP_Max);
+    this.SetHP(this.target.HP);
+    this.SetName(this.target.name);
+end
 
 --关闭事件--
 function TargetHeadCtrl.Close()
-	--KBEEvent.deregisterOut("onConnectStatus", this.onConnectStatus);
-	--KBEEvent.deregisterOut("onTargetHeadSuccessfully", this.onCreateAvatarSuccessfully);
-    --KBEEvent.deregisterOut("onCreateAvatarFailed", this.onCreateAvatarFailed);
-
-	--panelMgr:ClosePanel(CtrlNames.CreateAvatar);
 	destroy(gameObject);
 end
