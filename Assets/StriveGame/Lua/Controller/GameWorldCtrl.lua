@@ -15,7 +15,7 @@ end
 
 function GameWorldCtrl.Awake()
 	logWarn("GameWorldCtrl.Awake--->>");
-	panelMgr:CreatePanel('GameWorld', this.OnCreate);
+	panelMgr:CreatePanel('GameWorld',  this.OnCreate);
 end
 
 --启动事件--
