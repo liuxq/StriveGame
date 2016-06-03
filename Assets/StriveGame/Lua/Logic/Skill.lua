@@ -39,35 +39,28 @@ end
 function Skill:updateTimer(second)
     self.restCoolTimer = self.restCoolTimer + second;
 end
-		
+
 function Skill:use(caster, target)
-	caster:cellCall("useTargetSkill", self.id, target.id);
+	caster:cellCall({"useTargetSkill", self.id, target.id});
     self.restCoolTimer = 0;
 end
 
-function Skill:displaySkill(caster, target)   
-    if (self.displayType == 1) then   
-        resMgr:LoadPrefab('Skill', { SkillBox.dictSkillDisplay[skillEffect] }, function(objs)
+function Skill:displaySkill(caster, target)
+    if (self.displayType == 1) then
+        resMgr:LoadPrefab('Skill', { self.skillEffect }, function(objs)
 			local renderObj = newObject(objs[0]);
-			local fly = renderObj:AddComponent("NcEffectFlying");
-	        fly.FromPos = caster.position;
-	        fly.FromPos.y = 1;
-	        fly.ToPos = target.position;
-	        fly.ToPos.y = 1;
+			local fly = renderObj:GetComponent("NcEffectFlying");
+	        fly.FromPos = Vector3.New(caster.position.x, caster.position.y+1, caster.position.z);
+	        fly.ToPos = Vector3.New(target.position.x, target.position.y+1, target.position.z);
 	        --fly.Speed = 5.0f;
 	        --fly.HWRate = 0;
 		end);
 
         
     elseif (self.displayType == 0) then
-        local pos = target.position;
-        pos.y = 1;
-        
-        UnityEngine.Object.Instantiate(SkillBox.inst.dictSkillDisplay[skillEffect], pos, Quaternion.identity);
-
-        resMgr:LoadPrefab('Skill', { SkillBox.dictSkillDisplay[skillEffect] }, function(objs)
+        resMgr:LoadPrefab('Skill', { self.skillEffect }, function(objs)
 			local renderObj = newObject(objs[0]);
-			renderObj.transform.position = pos;
+			renderObj.transform.position = Vector3.New(target.position.x, target.position.y+1, target.position.z);
 		end);
     end
 end

@@ -31,6 +31,7 @@ function GameWorldCtrl.OnCreate(obj)
 	GameWorld:AddClick(GameWorldPanel.btnSkill1, this.OnAttackSkill1);
 	GameWorld:AddClick(GameWorldPanel.btnSkill2, this.OnAttackSkill2);
 	GameWorld:AddClick(GameWorldPanel.btnSkill3, this.OnAttackSkill3);
+	GameWorld:AddClick(GameWorldPanel.btnTabTarget, this.OnTabTarget);
 
 	logWarn("Start lua--->>"..gameObject.name);
 
@@ -43,6 +44,33 @@ function GameWorldCtrl.OnCreate(obj)
 		this.OnDie(p.state);
 	end
 	this.SetSkillButton();
+end
+
+--切换选择对象
+function GameWorldCtrl.OnTabTarget( )
+    local player = KBEngineLua.player();
+    if (player == nil) then
+        return;
+    end
+
+    local target = TargetHeadCtrl.target;
+
+    local mindis = 10000;
+    local minEntity = nil;
+    for i, entity in pairs(KBEngineLua.entities) do
+    	local obj = entity.renderObj;
+        if (obj ~= nil and obj.layer == LayerMask.NameToLayer("CanAttack") and entity.className == "Monster" and entity.HP > 0) then
+            local dis = Vector3.Distance(player.position, obj.transform.position);
+	        if (mindis > dis and (target == nil or target ~= nil and target ~= entity)) then
+	            mindis = dis;
+	            minEntity = entity;
+	        end
+        end
+    end
+    if minEntity ~= nil then
+        TargetHeadCtrl.target = minEntity;
+        TargetHeadCtrl.UpdateTargetUI();
+    end
 end
 
 --复活--
@@ -69,7 +97,7 @@ end
 
 --重置视角
 function GameWorldCtrl.OnResetView(go)
-	CameraFollow:ResetView();
+	CameraFollow.ResetView();
 end
 
 --关闭事件--
@@ -95,32 +123,21 @@ function GameWorldCtrl.AttackSkill(skillID )
         return;
     end
 
-    -- UI_Target ui_target = World.instance.getUITarget();
-    -- if (ui_target != null && ui_target.GE_target != null)
-    -- {
-    --     string name = ui_target.GE_target.name;
-    --     Int32 entityId = Utility.getPostInt(name);
-
-    --     if (avatar != null)
-    --     {
-    --         int errorCode = avatar.useTargetSkill(skillId, entityId);
-    --         if (errorCode == 1)
-    --         {
-    --             UI_ErrorHint._instance.errorShow("目标太远");
-    --             //逼近目标
-    --             UnityEngine.GameObject renderEntity = (UnityEngine.GameObject)entity.renderObj;
-    --             renderEntity.GetComponent<MoveController>().moveTo(ui_target.GE_target.transform, SkillBox.inst.get(skillId).canUseDistMax-1, skillId);
-    --         }
-    --         if (errorCode == 2)
-    --         {
-    --             UI_ErrorHint._instance.errorShow("技能冷却");
-    --         }
-    --         if (errorCode == 3)
-    --         {
-    --             UI_ErrorHint._instance.errorShow("目标已死亡");
-    --         }
-    --     }
-    -- }
+    local target = TargetHeadCtrl.target;
+    if (player ~= nil) then        
+        local errorCode = player:useTargetSkill(skillID, target);
+        if (errorCode == 1) then            
+            log("目标太远");
+            --逼近目标
+            SkillControl.MoveTo(target.renderObj.transform, SkillBox.Get(skillID).canUseDistMax-1, skillID);
+        end
+        if (errorCode == 2) then            
+            log("技能冷却");
+        end
+        if (errorCode == 3) then            
+            log("目标已死亡");
+        end
+    end
 end
 
 function GameWorldCtrl.OnAttackSkill1( )

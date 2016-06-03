@@ -42,7 +42,12 @@ end
 
 function KBEngineLua.Entity:set_HP(old)
 	local v = self.HP;
-	--Event.Brocast("set_state", self, v);
+	Event.Brocast("set_HP", self, v);
+end
+
+function KBEngineLua.Entity:set_HP_Max(old)
+	local v = self.HP_Max;
+	Event.Brocast("set_HP_Max", self, v);
 end
 
 function KBEngineLua.Entity:recvDamage(attackerID, skillID, damageType, damage)

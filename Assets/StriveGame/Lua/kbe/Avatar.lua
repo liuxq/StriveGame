@@ -47,19 +47,18 @@ function KBEngineLua.Avatar:sendChatMessage(msg)
     self:baseCall({"sendChatMessage", self.name .. ": " .. msg});
 end
 
-function KBEngineLua.Avatar:useTargetSkill(skillID, targetID)        
+function KBEngineLua.Avatar:useTargetSkill(skillID, target)        
     local skill = SkillBox.Get(skillID);
     if (skill == nil) then
         return 4;
     end
 
-    local TargetEntity = KBEngineLua.findEntity(targetID);
-    if TargetEntity == nil then
+    if target == nil then
         return 4;
     end
-    local errorCode = skill.validCast(self, TargetEntity);
+    local errorCode = skill:validCast(self, target);
     if (errorCode == 0) then         
-        skill.use(self, TargetEntity);
+        skill:use(self, target);
         return errorCode;
     end
     return errorCode;

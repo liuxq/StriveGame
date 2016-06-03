@@ -2,6 +2,7 @@ require "Logic/CameraFollow"
 require "Logic/InputControl"
 require "Logic/Character"
 require "Logic/SelectControl"
+require "Logic/SkillControl"
 
 World = {
 };
@@ -16,6 +17,8 @@ function World.init()
 	Event.AddListener("set_direction", World.set_direction);
 	Event.AddListener("set_name", World.set_name);
 	Event.AddListener("set_state", World.set_state);
+	Event.AddListener("set_HP", World.set_HP);
+	Event.AddListener("set_HP_Max", World.set_HP_Max);
 	Event.AddListener("updatePosition", World.updatePosition);
 	Event.AddListener("recvDamage", World.recvDamage)
 
@@ -33,8 +36,8 @@ function World.onAvatarEnterWorld( avatar )
 		go.transform.position = avatar.position;
 		--go.transform.direction = avatar.direction;
 		CameraFollow.target = go.transform;
-		CameraFollow:ResetView();
-		CameraFollow:FollowUpdate();
+		CameraFollow.ResetView();
+		CameraFollow.FollowUpdate();
 
 		InputControl.Init(avatar);
 		InputControl.OnEnable();
@@ -46,6 +49,9 @@ function World.onAvatarEnterWorld( avatar )
 		if joystick then
 			joystick.gameObject:SetActive(true);
 		end
+
+		--初始化角色技能控制
+		SkillControl.Init(avatar);
 	end);
 	
 	GameWorldCtrl.Awake();
@@ -55,6 +61,7 @@ function World.onAvatarEnterWorld( avatar )
 	SelectAvatarCtrl.Close();
 
 	UpdateBeat:Add(SelectControl.Update);
+	UpdateBeat:Add(SkillControl.Update);
 	
 end
 
@@ -149,10 +156,44 @@ function World.set_state( entity , v)
 	end
 end
 
+function World.set_HP( entity , v)
+	if entity.renderObj ~= nil then
+		if PlayerHeadCtrl.target == entity then
+			PlayerHeadCtrl.UpdateTargetUI();
+		end
+		if TargetHeadCtrl.target == entity then
+			TargetHeadCtrl.UpdateTargetUI();
+		end
+	end
+end
+
+function World.set_HP_Max( entity , v)
+	if entity.renderObj ~= nil then
+		if PlayerHeadCtrl.target == entity then
+			PlayerHeadCtrl.UpdateTargetUI();
+		end
+		if TargetHeadCtrl.target == entity then
+			TargetHeadCtrl.UpdateTargetUI();
+		end
+	end
+end
+
 function World.updatePosition( entity )
 	entity.gameEntity.m_destPosition = entity.position;
 end
 
 function World.recvDamage( receiver, attacker, skillID, damageType, damage )
-	log("damage:"..damage);
+	local sk = SkillBox.Get(skillID);
+    if (sk ~= nil) then
+        local renderObj = attacker.renderObj;
+        renderObj:GetComponent("Animator"):Play("Punch");
+
+        if attacker:isPlayer() then   
+        	local dir = receiver.position - attacker.position; 
+            renderObj.transform:LookAt(Vector3.New(renderObj.transform.position.x + dir.x, renderObj.transform.position.y, renderObj.transform.position.z + dir.z));
+        end
+
+        --显示技能效果
+        sk:displaySkill(attacker, receiver);
+    end
 end

@@ -27,6 +27,7 @@ function GameWorldPanel.InitPanel()
 	this.btnSkill1 = transform:FindChild("Button_skill1").gameObject;
 	this.btnSkill2 = transform:FindChild("Button_skill2").gameObject;
 	this.btnSkill3 = transform:FindChild("Button_skill3").gameObject;
+	this.btnTabTarget = transform:FindChild("Button_tabTarget").gameObject;
 	
 end
 

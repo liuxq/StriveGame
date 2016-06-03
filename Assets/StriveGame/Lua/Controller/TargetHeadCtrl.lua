@@ -22,7 +22,7 @@ end
 --启动事件--
 function TargetHeadCtrl.OnCreate(obj)
 	gameObject = obj;
-	gameObject.transform.position = Vector3.New(87.5, 128, 0);
+	gameObject.transform.position = Vector3.New(87.5, 337, 0);
 	TargetHead = gameObject:GetComponent('LuaBehaviour');
 
 	this.Deactivate();

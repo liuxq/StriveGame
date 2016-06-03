@@ -37,6 +37,8 @@ function InputControl.OnDisable( )
 end
 
 function InputControl.OnJoystickMove( move )
+
+    SkillControl.Stop();
 	local joyPositionX = move.joystickAxis.x;
     local joyPositionY = move.joystickAxis.y;
 
@@ -54,7 +56,7 @@ function InputControl.OnJoystickMove( move )
 
             this.headNameCanvasTrans.rotation = rotation;
             --移动摄像机
-            CameraFollow:FollowUpdate();
+            CameraFollow.FollowUpdate();
             --播放奔跑动画
             this.animator.speed = 2.0;
             this.animator:SetFloat("Speed", 1.0);

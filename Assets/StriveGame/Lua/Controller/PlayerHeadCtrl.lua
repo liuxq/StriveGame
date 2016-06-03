@@ -23,7 +23,7 @@ end
 --启动事件--
 function PlayerHeadCtrl.OnCreate(obj)
 	gameObject = obj;
-	gameObject.transform.position = Vector3.New(87.5, 176, 0);
+	gameObject.transform.position = Vector3.New(87.5, 385, 0);
 	PlayerHead = gameObject:GetComponent('LuaBehaviour');
 	--PlayerHead:AddClick(PlayerHeadPanel.btnPlayerHead, this.OnPlayerHead);
 	--PlayerHead:AddClick(PlayerHeadPanel.btnCancel, this.OnCancel);
