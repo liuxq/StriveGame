@@ -53,7 +53,6 @@ function World.onAvatarEnterWorld( avatar )
         GameWorldCtrl.Awake();
 	end
     SelectAvatarCtrl.Close();
-    MessageBoxCtrl.Awake();
 end
 
 function World.onEnterWorld( entity )

@@ -2,6 +2,7 @@ Event = require 'events'
 require "Logic/CtrlManager"
 require "Common/functions"
 require "Controller/LoginCtrl"
+require "Controller/MessageBoxCtrl"
 require "KbePlugins/KBEngine"
 require "Kbe/Account"
 require "Logic/World"
@@ -28,6 +29,7 @@ function Game.OnInitOK()
     --注册LuaView--
     this.InitViewPanels();
 
+    MessageBoxCtrl.Awake();
     CtrlManager.Init();
     local ctrl = CtrlManager.GetCtrl(CtrlNames.Login);
     if ctrl ~= nil then
