@@ -30,6 +30,8 @@ function Game.OnInitOK()
     this.InitViewPanels();
 
     MessageBoxCtrl.Awake();
+    this.objHUDText = find("HUDText");
+
     CtrlManager.Init();
     local ctrl = CtrlManager.GetCtrl(CtrlNames.Login);
     if ctrl ~= nil then

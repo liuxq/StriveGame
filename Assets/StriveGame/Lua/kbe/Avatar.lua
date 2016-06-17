@@ -27,7 +27,10 @@ function KBEngineLua.Avatar:updatePlayer(x, y, z, yaw)
     self.position.y = y;
     self.position.z = z;
 
-    self.direction.z = yaw;
+    self.direction.z = yaw;	
+    if(GameWorldPanel.textPos ~= nil) then
+        GameWorldPanel.textPos:GetComponent('Text').text = string.format("%.1f", self.position.x) ..","..string.format("%.1f", self.position.z);
+    end
 end
 
 function KBEngineLua.Avatar:onEnterWorld()

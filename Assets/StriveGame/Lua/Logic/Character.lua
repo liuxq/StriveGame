@@ -52,8 +52,8 @@ function Character:SetName( name )
 end
 
 function Character:recvDamage( receiver, attacker, skillID, damageType, damage )
-    local objHUDText = find("HUDText");
-    local HUDText = objHUDText:GetComponent("bl_HUDText");
+--    local objHUDText = find("HUDText");
+    local HUDText = Game.objHUDText:GetComponent("bl_HUDText");
     HUDText:NewText(tostring(damage),self.entity.renderObj.transform,Color.red,10,20,-1,2.5,0);--, 8, 20, -1, 2.2);
 --    bl_HUDText.NewText(tostring(damage),self.entity.renderObj.transform,Color.green0, 8, 20, -1, 2.2, 0);
 end
