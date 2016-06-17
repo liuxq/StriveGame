@@ -3,7 +3,7 @@
 --      All rights reserved.
 --      Use, modification and distribution are subject to the "MIT License"
 --------------------------------------------------------------------------------
-
+local math  = math
 local acos	= math.acos
 local sqrt 	= math.sqrt
 local max 	= math.max
@@ -16,14 +16,12 @@ local sign	= Mathf.Sign
 local setmetatable = setmetatable
 local rawset = rawset
 local rawget = rawget
+local type = type
 
 local rad2Deg = Mathf.Rad2Deg
 local deg2Rad = Mathf.Deg2Rad
 
-local Vector3 = 
-{		
-}
-
+local Vector3 = {}
 local get = tolua.initget(Vector3)
 
 Vector3.__index = function(t,k)
@@ -40,17 +38,17 @@ Vector3.__index = function(t,k)
 	return var
 end
 
-Vector3.__call = function(t,x,y,z)
-	return Vector3.New(x,y,z)
-end
-
 function Vector3.New(x, y, z)	
 	local v = {x = x or 0, y = y or 0, z = z or 0}		
 	setmetatable(v, Vector3)		
 	return v
 end
 
-local new = Vector3.New
+local _new = Vector3.New
+
+Vector3.__call = function(t,x,y,z)
+	return _new(x,y,z)
+end
 	
 function Vector3:Set(x,y,z)	
 	self.x = x or 0
@@ -63,7 +61,7 @@ function Vector3:Get()
 end
 
 function Vector3:Clone()
-	return new(self.x, self.y, self.z)
+	return _new(self.x, self.y, self.z)
 end
 
 function Vector3.Distance(va, vb)
@@ -76,7 +74,7 @@ end
 
 function Vector3.Lerp(from, to, t)	
 	t = clamp(t, 0, 1)
-	return new(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t, from.z + (to.z - from.z) * t)
+	return _new(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t, from.z + (to.z - from.z) * t)
 end
 
 function Vector3:Magnitude()
@@ -84,11 +82,11 @@ function Vector3:Magnitude()
 end
 
 function Vector3.Max(lhs, rhs)
-	return new(max(lhs.x, rhs.x), max(lhs.y, rhs.y), max(lhs.z, rhs.z))
+	return _new(max(lhs.x, rhs.x), max(lhs.y, rhs.y), max(lhs.z, rhs.z))
 end
 
 function Vector3.Min(lhs, rhs)
-	return new(min(lhs.x, rhs.x), min(lhs.y, rhs.y), min(lhs.z, rhs.z))
+	return _new(min(lhs.x, rhs.x), min(lhs.y, rhs.y), min(lhs.z, rhs.z))
 end
 
 function Vector3.Normalize(v)
@@ -96,10 +94,10 @@ function Vector3.Normalize(v)
 	local num = sqrt(x * x + y * y + z * z)	
 	
 	if num > 1e-5 then		
-		return new(x/num, y/num, z/num)   			
+		return _new(x/num, y/num, z/num)   			
     end
 	  
-	return new(0, 0, 0)			
+	return _new(0, 0, 0)			
 end
 
 function Vector3:SetNormalize()
@@ -254,7 +252,7 @@ end
 local overSqrt2 = 0.7071067811865475244008443621048490
 
 local function OrthoNormalVector(vec)
-	local res = Vector3.New()
+	local res = _new()
 	
 	if abs(vec.z) > overSqrt2 then			
 		local a = vec.y * vec.y + vec.z * vec.z
@@ -334,14 +332,14 @@ function Vector3.Scale(a, b)
 	local x = a.x * b.x
 	local y = a.y * b.y
 	local z = a.z * b.z	
-	return new(x, y, z)
+	return _new(x, y, z)
 end
 	
 function Vector3.Cross(lhs, rhs)
 	local x = lhs.y * rhs.z - lhs.z * rhs.y
 	local y = lhs.z * rhs.x - lhs.x * rhs.z
 	local z = lhs.x * rhs.y - lhs.y * rhs.x
-	return Vector3.New(x,y,z)	
+	return _new(x,y,z)	
 end
 	
 function Vector3:Equals(other)
@@ -360,7 +358,7 @@ function Vector3.Project(vector, onNormal)
 	local num = onNormal:SqrMagnitude()
 	
 	if num < 1.175494e-38 then	
-		return Vector3.New(0,0,0)
+		return _new(0,0,0)
 	end
 	
 	local num2 = dot(vector, onNormal)
@@ -484,12 +482,12 @@ Vector3.__tostring = function(self)
 end
 
 Vector3.__div = function(va, d)
-	return Vector3.New(va.x / d, va.y / d, va.z / d)
+	return _new(va.x / d, va.y / d, va.z / d)
 end
 
 Vector3.__mul = function(va, d)
 	if type(d) == "number" then
-		return Vector3.New(va.x * d, va.y * d, va.z * d)
+		return _new(va.x * d, va.y * d, va.z * d)
 	else
 		local vec = va:Clone()
 		vec:MulQuat(d)
@@ -498,15 +496,15 @@ Vector3.__mul = function(va, d)
 end
 
 Vector3.__add = function(va, vb)
-	return Vector3.New(va.x + vb.x, va.y + vb.y, va.z + vb.z)
+	return _new(va.x + vb.x, va.y + vb.y, va.z + vb.z)
 end
 
 Vector3.__sub = function(va, vb)
-	return Vector3.New(va.x - vb.x, va.y - vb.y, va.z - vb.z)
+	return _new(va.x - vb.x, va.y - vb.y, va.z - vb.z)
 end
 
 Vector3.__unm = function(va)
-	return Vector3.New(-va.x, -va.y, -va.z)
+	return _new(-va.x, -va.y, -va.z)
 end
 
 Vector3.__eq = function(a,b)
@@ -515,18 +513,19 @@ Vector3.__eq = function(a,b)
 	return delta < 1e-10
 end
 
-get.up 		= function() return Vector3.New(0,1,0) end
-get.down 	= function() return Vector3.New(0,-1,0) end
-get.right	= function() return Vector3.New(1,0,0) end
-get.left	= function() return Vector3.New(-1,0,0) end
-get.forward = function() return Vector3.New(0,0,1) end
-get.back	= function() return Vector3.New(0,0,-1) end
-get.zero	= function() return Vector3.New(0,0,0) end
-get.one		= function() return Vector3.New(1,1,1) end
+get.up 		= function() return _new(0,1,0) end
+get.down 	= function() return _new(0,-1,0) end
+get.right	= function() return _new(1,0,0) end
+get.left	= function() return _new(-1,0,0) end
+get.forward = function() return _new(0,0,1) end
+get.back	= function() return _new(0,0,-1) end
+get.zero	= function() return _new(0,0,0) end
+get.one		= function() return _new(1,1,1) end
 
 get.magnitude	= Vector3.Magnitude
 get.normalized	= Vector3.Normalize
 get.sqrMagnitude= Vector3.SqrMagnitude
 
+UnityEngine.Vector3 = Vector3
 setmetatable(Vector3, Vector3)
 return Vector3
