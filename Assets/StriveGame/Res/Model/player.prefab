@@ -4277,7 +4277,6 @@ GameObject:
   - 95: {fileID: 9580064}
   - 54: {fileID: 5412682}
   - 136: {fileID: 13647710}
-  - 114: {fileID: 11417524}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -6432,7 +6431,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 114060}
-  m_LocalRotation: {x: 0.7057108, y: 0.70281136, z: 0.044410672, w: 0.0778221}
+  m_LocalRotation: {x: 0.70571077, y: 0.7028113, z: 0.04441067, w: 0.07782209}
   m_LocalPosition: {x: -0.036948025, y: 0.038000025, z: 0.08224521}
   m_LocalScale: {x: 0.9999997, y: 1, z: 1.0000001}
   m_Children:
@@ -7999,7 +7998,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151174}
-  m_LocalRotation: {x: 0.7655827, y: -0.16700299, z: 0.4033006, w: 0.47259063}
+  m_LocalRotation: {x: 0.76558256, y: -0.16700298, z: 0.40330055, w: 0.47259057}
   m_LocalPosition: {x: -0.13063581, y: -0.035674542, z: -0.20663574}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 0.9999999}
   m_Children:
@@ -12048,23 +12047,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &11417524
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 167604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f65255fa7b687e347a71383a6cc713d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HUDRoot: {fileID: 0}
-  enemy: 0
-  friendly: 0
-  player: 0
-  Other: 0
-  Other2: 0
 --- !u!114 &11425076
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -30,8 +30,9 @@ function GameWorldCtrl.OnCreate(obj)
 	GameWorld:AddClick(GameWorldPanel.btnRelive, this.OnRelive);
 	GameWorld:AddClick(GameWorldPanel.btnClose, this.OnClose);
 	GameWorld:AddClick(GameWorldPanel.btnSend, this.OnSendMessage);
+    GameWorld:AddClick(GameWorldPanel.btnResetView, this.OnResetView);
 
-	logWarn("Start lua--->>"..gameObject.name);
+    logWarn("Start lua--->>"..gameObject.name);
     Event.AddListener("OnDie", this.OnDie);
     Event.AddListener("Set_HP", this.Set_HP);
     Event.AddListener("Set_HP_Max", this.Set_HP_Max);
@@ -70,6 +71,11 @@ function GameWorldCtrl.OnSendMessage(go)
 	if p ~= nil and string.len(GameWorldPanel.input_content.text) > 0 then
 		Event.Brocast("sendChatMessage", p, GameWorldPanel.input_content.text);
 	end
+end
+
+--重置视角
+function GameWorldCtrl.OnResetView(go)
+    CameraFollow:ResetView();
 end
 
 --关闭事件--

@@ -25,6 +25,7 @@ function GameWorldPanel.InitPanel()
     this.sb_vertical = transform:FindChild("Scroll View/Scrollbar Vertical"):GetComponent("Scrollbar");
     this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
     this.Panel_PlayerHead = transform:FindChild("Panel_PalyerHead").gameObject;
+    this.btnResetView = transform:FindChild("Button_resetView").gameObject;
 --    local name_text = GameWorldPanel.Panel_PlayerHead:FindChild("Text_PlayerName");
 
 end

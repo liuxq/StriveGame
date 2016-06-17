@@ -95,19 +95,22 @@ function World.onEnterWorld( entity )
 end
 
 function World.InitEntity( entity )
-	--开始循环
-	entity.character = Character:New();
-	entity.character:Init(entity);		
+    if entity.className == "Gate" or entity.className == "DroppedItem" then
+        entity.gameEntity = GameEntity:New();
+    else
+        entity.gameEntity = Character:New();
+    end
+    entity.gameEntity:Init(entity);		
 
-	if entity.name then
-		World.set_name( entity , entity.name )
-	end
+    if entity.name then
+        World.set_name( entity , entity.name )
+    end
 end
 
 function World.onLeaveWorld(entity)
-	if entity.character ~= nil then
-		entity.character:Destroy();
-	end
+    if entity.gameEntity ~= nil then
+        entity.gameEntity:Destroy();
+    end
 	if entity.renderObj ~= nil then
 		destroy(entity.renderObj);
 		entity.renderObj = nil;
@@ -121,16 +124,16 @@ function World.addSpaceGeometryMapping( path )
 end
 
 function World.set_position( entity )
-	entity.character:SetPosition(entity.position);
+    entity.gameEntity:SetPosition(entity.position);
 end
 
 function World.set_direction( entity )
-	entity.character.m_destDirection = Vector3.New(entity.direction.y, entity.direction.z, entity.direction.x);
+    entity.gameEntity.m_destDirection = Vector3.New(entity.direction.y, entity.direction.z, entity.direction.x);
 end
 
 function World.set_name( entity , v)
-	if entity.character then
-        entity.character:SetName(v);
+    if entity.gameEntity then
+        entity.gameEntity:SetName(v);
     end
 end
 
@@ -148,8 +151,8 @@ function World.set_HP_Max( entity , v)
 end
 
 function World.set_state( entity , v)
-	if entity.character then
-		entity.character:OnState(v);
+    if entity.gameEntity then
+        entity.gameEntity:OnState(v);
 	end
 	if entity:isPlayer() then
 		GameWorldCtrl.OnDie(v);
@@ -157,7 +160,7 @@ function World.set_state( entity , v)
 end
 
 function World.updatePosition( entity )
-	entity.character.m_destPosition = entity.position;
+    entity.gameEntity.m_destPosition = entity.position;
 end
 
 function World.recvDamage( receiver, attacker, skillID, damageType, damage )
@@ -171,6 +174,6 @@ function World.recvDamage( receiver, attacker, skillID, damageType, damage )
 --    else
 --        print("rensiwei a nil enity00000");
 --    end
-    receiver.character:recvDamage( receiver, attacker, skillID, damageType, damage );
+    receiver.gameEntity:recvDamage( receiver, attacker, skillID, damageType, damage );
     log("damage:"..damage);
 end

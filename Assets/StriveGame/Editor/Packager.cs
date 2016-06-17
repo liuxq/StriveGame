@@ -172,6 +172,7 @@ public class Packager {
         AddBuildMap("SelectAvatar" + AppConst.ExtName, "SelectAvatarPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("GameWorld" + AppConst.ExtName, "GameWorldPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("Model" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Model");
+        AddBuildMap("Skill" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Skill");
         AddBuildMap("Terrain" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Terrain");
     }
 
