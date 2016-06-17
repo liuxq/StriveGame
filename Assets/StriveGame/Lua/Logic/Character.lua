@@ -106,15 +106,15 @@ function Character:Update()
 			flag = true;
 		end
 	end
-
-	if flag then
-        self.animator.speed = 2.0;
-        self.animator:SetFloat("Speed", 1.0);
-    else
-        self.animator.speed = 1.0;
-        self.animator:SetFloat("Speed", 0.0);
-   	end
-
+    if  self.animator ~= nil then
+        if flag then
+			self.animator.speed = 2.0;
+			self.animator:SetFloat("Speed", 1.0);
+		else
+			self.animator.speed = 1.0;
+			self.animator:SetFloat("Speed", 0.0);
+		end
+	end
 end
 
 function Character:FixedUpdate()
