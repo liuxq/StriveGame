@@ -8,25 +8,25 @@ SceneSettings:
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
     smallestOccluder: 5
-    smallestHole: .25
+    smallestHole: 0.25
     backfaceThreshold: 100
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
   m_Fog: 0
-  m_FogColor: {r: .5, g: .5, b: .5, a: 1}
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: .00999999978
+  m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
-  m_AmbientEquatorColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
-  m_AmbientGroundColor: {r: .200000003, g: .200000003, b: .200000003, a: 1}
+  m_AmbientSkyColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  m_AmbientEquatorColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  m_AmbientGroundColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SkyboxMaterial: {fileID: 0}
-  m_HaloStrength: .5
+  m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -40,7 +40,7 @@ RenderSettings:
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 5
+  serializedVersion: 6
   m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
@@ -66,7 +66,7 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightmapSnapshot: {fileID: 0}
+  m_LightingDataAsset: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
 NavMeshSettings:
@@ -74,17 +74,63 @@ NavMeshSettings:
   m_ObjectHideFlags: 0
   m_BuildSettings:
     serializedVersion: 2
-    agentRadius: .5
+    agentRadius: 0.5
     agentHeight: 2
     agentSlope: 45
-    agentClimb: .400000006
+    agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     accuratePlacement: 0
     minRegionArea: 2
-    cellSize: .166666657
+    cellSize: 0.16666666
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &202511985
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -112.199814
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 156.62527
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.08194733
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+      propertyPath: CanvasParent
+      value: 
+      objectReference: {fileID: 347587868}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &216123156
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,14 +180,14 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: .192156866, g: .301960796, b: .474509805, a: .0196078438}
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -157,7 +203,7 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
-  m_StereoSeparation: .0219999999
+  m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
 --- !u!4 &216123161
 Transform:
@@ -166,7 +212,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 216123156}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 68.5243835, y: 93.8657532, z: 12.3004456}
+  m_LocalPosition: {x: 68.52438, y: 93.86575, z: 12.300446}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -236,7 +282,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 711, y: 400}
+  m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -258,8 +304,10 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &379554406
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,7 +354,7 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
-  m_RepeatDelay: .5
+  m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
 --- !u!114 &379554409
 MonoBehaviour:
@@ -417,7 +465,7 @@ MonoBehaviour:
     m_Bits: 0
   StationnaryTolerance: 25
   longTapTime: 1
-  swipeTolerance: .850000024
+  swipeTolerance: 0.85
   minPinchLength: 0
   minTwistAngle: 1
   enabledNGuiMode: 0
@@ -434,7 +482,7 @@ MonoBehaviour:
   showGesture: 1
   showTwoFinger: 1
   showSecondFinger: 1
-  secondFingerTexture: {fileID: 0}
+  secondFingerTexture: {fileID: 2800000, guid: 9cfeb5ae16bf3cc4084255c9ae7cf36f, type: 3}
 --- !u!4 &967952849
 Transform:
   m_ObjectHideFlags: 0
@@ -481,8 +529,9 @@ Light:
     m_Type: 0
     m_Resolution: -1
     m_Strength: 1
-    m_Bias: .0500000007
-    m_NormalBias: .400000006
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
@@ -501,8 +550,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1366073067}
-  m_LocalRotation: {x: .408217937, y: -.234569728, z: .109381676, w: .875426054}
-  m_LocalPosition: {x: 0, y: 0, z: -27.5100002}
+  m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.109381676, w: 0.87542605}
+  m_LocalPosition: {x: 0, y: 0, z: -27.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -516,6 +565,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1485306845}
   - 114: {fileID: 1485306846}
+  - 143: {fileID: 1485306847}
   m_Layer: 0
   m_Name: GameJoystick
   m_TagString: Untagged
@@ -530,7 +580,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1485306844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.81723022, y: -45.9748077, z: 48.1837311}
+  m_LocalPosition: {x: 2.8172302, y: -45.974808, z: 48.18373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1754509425}
@@ -555,12 +605,12 @@ MonoBehaviour:
   area: 0
   joyAnchor: 7
   joystickPositionOffset: {x: 0, y: 0}
-  zoneRadius: 100
-  touchSize: 30
+  zoneRadius: 71
+  touchSize: 35
   deadZone: 20
   restrictArea: 0
   resetFingerExit: 0
-  interaction: 2
+  interaction: 3
   useBroadcast: 0
   messageMode: 0
   receiverGameObject: {fileID: 0}
@@ -576,7 +626,7 @@ MonoBehaviour:
   clampXMax: 0
   clampXMin: 0
   enableXAutoStab: 0
-  thresholdX: .00999999978
+  thresholdX: 0.01
   stabSpeedX: 20
   enableYaxis: 1
   yAxisTransform: {fileID: 0}
@@ -589,7 +639,7 @@ MonoBehaviour:
   clampYMax: 0
   clampYMin: 0
   enableYAutoStab: 0
-  thresholdY: .00999999978
+  thresholdY: 0.01
   stabSpeedY: 20
   enableSmoothing: 0
   smoothing: {x: 2, y: 2}
@@ -608,6 +658,23 @@ MonoBehaviour:
   showInteraction: 1
   showAppearance: 1
   showPosition: 1
+--- !u!143 &1485306847
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1485306844}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1594091349
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,7 +749,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1614297447}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 371.000946, y: 169.460724, z: 8.375}
+  m_LocalPosition: {x: 371.00095, y: 169.46072, z: 8.375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -709,7 +776,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1754509424}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.81723022, y: 45.9748077, z: -48.1837311}
+  m_LocalPosition: {x: -2.8172302, y: 45.974808, z: -48.18373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1485306845}

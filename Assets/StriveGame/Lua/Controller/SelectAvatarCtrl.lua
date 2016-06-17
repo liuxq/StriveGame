@@ -87,14 +87,21 @@ function SelectAvatarCtrl.OnReqEnterGame(go)
 				name = SelectAvatarPanel.btnAvatar[i].transform:FindChild('Label'):GetComponent('Text').text;
 				break;
 			end
+        end
+        if nil == name then
+            name = SelectAvatarPanel.btnAvatar[1].transform:FindChild('Label'):GetComponent('Text').text;
 		end
-		for key, value in pairs(this.avatars) do
+            for key, value in pairs(this.avatars) do
 			if value["name"] == name then
 				dbid = key;
 			end
 		end
-		p:reqSelectAvatarGame(dbid);
-	end
+        p:reqSelectAvatarGame(dbid);
+        if(0 == GameWorldCtrl.hasAwake) then
+            GameWorldCtrl.Awake();
+        end
+    end
+	this.Close();
 end
 
 --------------------数据发过来的事件-----------------------------

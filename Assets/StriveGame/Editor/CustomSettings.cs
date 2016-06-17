@@ -48,8 +48,9 @@ public static class CustomSettings
         //_GT(typeof(KeyValuePair<int, TestAccount>)),    
         //-------------------------------------------------------------------        
                                        
-        _GT(typeof(Debugger)),                       
-                                       
+        _GT(typeof(Debugger)),
+
+        _GT(typeof(Color)),
         _GT(typeof(Component)),
         _GT(typeof(Behaviour)),
         _GT(typeof(MonoBehaviour)),        
@@ -82,7 +83,7 @@ public static class CustomSettings
         _GT(typeof(KeyCode)),
         _GT(typeof(SkinnedMeshRenderer)),
         _GT(typeof(Space)),        
-                                           
+                                         
         _GT(typeof(MeshRenderer)),            
         _GT(typeof(ParticleEmitter)),
         _GT(typeof(ParticleRenderer)),
@@ -114,7 +115,8 @@ public static class CustomSettings
         _GT(typeof(InputField)),
         _GT(typeof(Toggle)),
         _GT(typeof(Scrollbar)),
-        
+        _GT(typeof(Slider)),
+
         _GT(typeof(Util)),
         _GT(typeof(AppConst)),
         _GT(typeof(LuaHelper)),
@@ -135,7 +137,10 @@ public static class CustomSettings
         _GT(typeof(KBEngine.PersistentInofs)),
         _GT(typeof(EasyJoystick)),
         _GT(typeof(MovingJoystick)),
-        
+
+        //UGUI HUD TEXT
+        _GT(typeof(bl_HUDText)).SetBaseType(typeof(System.Object)),
+
     };
 
     public static List<Type> dynamicList = new List<Type>()

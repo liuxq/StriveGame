@@ -22,7 +22,10 @@ function GameWorldPanel.InitPanel()
 	this.btnClose = transform:FindChild("Button_close").gameObject;
 	this.textContent = transform:FindChild("Scroll View/Viewport/trans_content").gameObject;
 	this.sb_vertical = transform:FindChild("Scroll View/Scrollbar Vertical"):GetComponent("Scrollbar");
-	this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
+    this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
+    this.Panel_PlayerHead = transform:FindChild("Panel_PalyerHead").gameObject;
+--    local name_text = GameWorldPanel.Panel_PlayerHead:FindChild("Text_PlayerName");
+
 end
 
 --单击事件--

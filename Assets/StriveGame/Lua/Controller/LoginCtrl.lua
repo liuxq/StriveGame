@@ -32,8 +32,10 @@ function LoginCtrl.OnCreate(obj)
 	Event.AddListener("onLoginSuccessfully", this.onLoginSuccessfully);
 	Event.AddListener("onLoginFailed", this.onLoginFailed);
 	Event.AddListener("onCreateAccountResult", this.onCreateAccountResult);
-	Event.AddListener("onReqAvatarList", this.onReqAvatarList);
+    Event.AddListener("onReqAvatarList", this.onReqAvatarList);
 
+    LoginPanel.inputUsername:GetComponent('InputField').text = "zl111";
+    LoginPanel.inputPassword:GetComponent('InputField').text = "123456";
 end
 
 --登录--

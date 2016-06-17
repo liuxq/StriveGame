@@ -1,6 +1,8 @@
 require "Logic/CameraFollow"
 require "Logic/InputControl"
 require "Logic/Character"
+require "Controller/GameWorldCtrl"
+require "Controller/MessageBoxCtrl"
 
 World = {};
 
@@ -13,10 +15,11 @@ function World.init()
 	Event.AddListener("set_position", World.set_position);
 	Event.AddListener("set_direction", World.set_direction);
 	Event.AddListener("set_name", World.set_name);
-	Event.AddListener("set_state", World.set_state);
-	Event.AddListener("updatePosition", World.updatePosition);
+    Event.AddListener("set_state", World.set_state);
+    Event.AddListener("set_HP", World.set_HP);
+    Event.AddListener("set_HP_Max", World.set_HP_Max);
+    Event.AddListener("updatePosition", World.updatePosition);
 	Event.AddListener("recvDamage", World.recvDamage)
-
 end
 
 function World.onAvatarEnterWorld( avatar )
@@ -46,9 +49,11 @@ function World.onAvatarEnterWorld( avatar )
 		end
 	end);
 	
-	GameWorldCtrl.Awake();
-	SelectAvatarCtrl.Close();
-	
+    if(0 == GameWorldCtrl.hasAwake) then
+        GameWorldCtrl.Awake();
+	end
+    SelectAvatarCtrl.Close();
+    MessageBoxCtrl.Awake();
 end
 
 function World.onEnterWorld( entity )
@@ -57,19 +62,19 @@ function World.onEnterWorld( entity )
 	end
 
 	if entity.className == "Gate" then
-		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
+		resMgr:LoadPrefab('Model', { 'Gate' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "Monster" then
-		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
+        resMgr:LoadPrefab('Model', { 'player' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "DroppedItem" then
-		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
+        resMgr:LoadPrefab('Model', { 'droppedItem' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
@@ -81,7 +86,7 @@ function World.onEnterWorld( entity )
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "NPC" then
-		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
+        resMgr:LoadPrefab('Model', { 'entity' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
@@ -126,8 +131,21 @@ end
 
 function World.set_name( entity , v)
 	if entity.character then
-		entity.character:SetName(v);
-	end
+        entity.character:SetName(v);
+    end
+end
+
+function World.set_HP( entity , v)
+    if entity:isPlayer() then
+        GameWorldCtrl.Set_HP(v);
+    end
+end
+
+function World.set_HP_Max( entity , v)
+--    print("rensiwei Set_HP_Max"..v)
+    if entity:isPlayer() then--当前选择的角色
+        GameWorldCtrl.Set_HP_Max(v);
+    end
 end
 
 function World.set_state( entity , v)
@@ -144,5 +162,16 @@ function World.updatePosition( entity )
 end
 
 function World.recvDamage( receiver, attacker, skillID, damageType, damage )
-	log("damage:"..damage);
+--    print("rensiwei a nil enity ： receiver"..receiver.."KBEngineLua.Avatar.id:"..KBEngineLua.Avatar.id1);
+--    local entity = KBEngineLua.findEntity(receiver);
+--    if(entity == nil) then 
+--        print("rensiwei a nil enity ： receiver"..receiver.."KBEngineLua.Avatar.id:"..KBEngineLua.Avatar.id);
+--	end
+--    if(receiver == KBEngineLua.Avatar.id) then--受伤的是主角
+--        receiver.character:recvDamage( receiver, attacker, skillID, damageType, damage );
+--    else
+--        print("rensiwei a nil enity00000");
+--    end
+    receiver.character:recvDamage( receiver, attacker, skillID, damageType, damage );
+    log("damage:"..damage);
 end

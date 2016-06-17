@@ -1,4 +1,5 @@
 require "Common/define"
+require "Controller/MessageBoxCtrl"
 
 GameWorldCtrl = {};
 local this = GameWorldCtrl;
@@ -9,13 +10,15 @@ local gameObject;
 
 --构建函数--
 function GameWorldCtrl.New()
-	logWarn("GameWorldCtrl.New--->>");
-	return this;
+    logWarn("GameWorldCtrl.New--->>");
+    GameWorldCtrl.hasAwake = 0;
+    return this;
 end
 
 function GameWorldCtrl.Awake()
-	logWarn("GameWorldCtrl.Awake--->>");
-	panelMgr:CreatePanel('GameWorld', this.OnCreate);
+    logWarn("GameWorldCtrl.Awake--->>");
+    panelMgr:CreatePanel('GameWorld', this.OnCreate);
+    GameWorldCtrl.hasAwake = 1;
 end
 
 --启动事件--
@@ -29,21 +32,28 @@ function GameWorldCtrl.OnCreate(obj)
 	GameWorld:AddClick(GameWorldPanel.btnSend, this.OnSendMessage);
 
 	logWarn("Start lua--->>"..gameObject.name);
+    Event.AddListener("OnDie", this.OnDie);
+    Event.AddListener("Set_HP", this.Set_HP);
+    Event.AddListener("Set_HP_Max", this.Set_HP_Max);
+    Event.AddListener("Set_PlayerName", this.Set_PlayerName);
+    Event.AddListener("ReceiveChatMessage", this.ReceiveChatMessage);
 
-	Event.AddListener("OnDie", this.OnDie);
-	Event.AddListener("ReceiveChatMessage", this.ReceiveChatMessage);
-
-	local p = KBEngineLua.player();
-	if p ~= nil then
+    if p ~= nil then
 		this.OnDie(p.state);
 	end
 
 end
 
+function GameWorldCtrl.onclick()
+    print("rensiwei onclick callback")
+end
+
 --复活--
 function GameWorldCtrl.OnRelive(go)
 
-	local p = KBEngineLua.player();
+    MessageBoxCtrl.SetInfo("0000","123456789",GameWorldCtrl.onclick);
+    MessageBoxCtrl.Show();
+    local p = KBEngineLua.player();
 	if p ~= nil then
 		p:relive(1);
 	end
@@ -76,6 +86,32 @@ function GameWorldCtrl.OnDie(v)
 		GameWorldPanel.PanelDie:SetActive(true);
 	else
 		GameWorldPanel.PanelDie:SetActive(false);
+	end
+end
+
+--------主角头像---
+function GameWorldCtrl.Set_HP(hp)
+    local slider_hp = GameWorldPanel.Panel_PlayerHead.transform:FindChild("Slider_HP"):GetComponent("Slider");
+    local hp_player = GameWorldPanel.Panel_PlayerHead.transform:FindChild("Text_HP"):GetComponent("Text");
+    if hp >= 0 then
+        slider_hp.value = hp;
+        hp_player.text = hp.. "/" .. slider_hp.maxValue;
+    end
+end
+-------设置HP最大值--
+function GameWorldCtrl.Set_HP_Max(value)
+    local slider_hp = GameWorldPanel.Panel_PlayerHead.transform:FindChild("Slider_HP"):GetComponent("Slider");
+    if value > 0 then
+        slider_hp.maxValue = value;
+    end
+end
+----- 设置主角名字--
+function GameWorldCtrl.Set_PlayerName(name)
+    if (nil ~= GameWorldPanel.Panel_PlayerHead) then
+        local name_text = GameWorldPanel.Panel_PlayerHead.transform:FindChild("Text_PlayerName"):GetComponent("Text");
+        if(string.len(name) >= 0 ) then
+			name_text.text = name;
+        end
 	end
 end
 

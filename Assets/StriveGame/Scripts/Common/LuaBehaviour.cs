@@ -18,6 +18,10 @@ namespace LuaFramework {
             Util.CallMethod(name, "Start");
         }
 
+        protected void Update()
+        {
+            Util.CallMethod(name, "Tick");
+        }
         protected void OnClick() {
             Util.CallMethod(name, "OnClick");
         }

@@ -66,9 +66,11 @@ public class Packager {
         AssetDatabase.Refresh();
 
         maps.Clear();
-        if (AppConst.LuaBundleMode) {
+        if (AppConst.LuaBundleMode)
+        {
             HandleLuaBundle();
-        } else {
+        }
+        else {
             HandleLuaFile();
         }
 
@@ -166,6 +168,7 @@ public class Packager {
 
         AddBuildMap("CreateAvatar" + AppConst.ExtName, "CreateAvatarPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("Login" + AppConst.ExtName, "LoginPanel.prefab", "Assets/StriveGame/Res/View");
+        AddBuildMap("MessageBox" + AppConst.ExtName, "MessageBoxPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("SelectAvatar" + AppConst.ExtName, "SelectAvatarPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("GameWorld" + AppConst.ExtName, "GameWorldPanel.prefab", "Assets/StriveGame/Res/View");
         AddBuildMap("Model" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Model");

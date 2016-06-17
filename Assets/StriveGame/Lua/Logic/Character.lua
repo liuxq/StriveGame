@@ -32,8 +32,9 @@ end
 
 function Character:Init( entity )
 	self.entity = entity;
-	self:StartUpdate();
-	self.headName = entity.renderObj.transform:Find("Canvas/Text"):GetComponent("Text");
+    self:StartUpdate();
+--    print("rensiwei"..entity.className)
+    self.headName = entity.renderObj.transform:Find("Canvas/Text"):GetComponent("Text");
 	self.headNameCanvasTrans = entity.renderObj.transform:Find("Canvas").transform;
 	self.animator = entity.renderObj.transform:GetComponent("Animator");
 	self.cameraTransform = UnityEngine.Camera.main.transform;
@@ -45,6 +46,27 @@ function Character:SetName( name )
     if self.headName ~= nil then
         self.headName.text = self.entityName;
     end
+    if self.entity:isPlayer() then
+        GameWorldCtrl.Set_PlayerName(name);
+    end
+end
+
+function Character:recvDamage( receiver, attacker, skillID, damageType, damage )
+--    local HUDText = bl_HUDText.New();
+--    if HUDText == nil then
+--        print("rensiwei recvDamage: "..tostring(damage));
+--    else
+--        print("rensiwei recvDamage not nil : "..tostring(damage));
+--    end
+    local objHUDText = find("HUDText");
+    local HUDText = objHUDText:GetComponent("bl_HUDText");
+    if HUDText == nil then
+        print("rensiwei recvDamage: "..tostring(damage));
+    else
+        print("rensiwei recvDamage not nil : "..tostring(damage));
+    end
+    HUDText:NewText(tostring(damage),self.entity.renderObj.transform,Color.red,10,20,-1,2.5,0);--, 8, 20, -1, 2.2);
+--    bl_HUDText.NewText(tostring(damage),self.entity.renderObj.transform,Color.green0, 8, 20, -1, 2.2, 0);
 end
 
 function Character:OnState( v )

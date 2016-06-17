@@ -38,6 +38,7 @@ KBEngineLua.KBE_FLT_MAX	= 3.402823466e+38;
 KBEngineLua.entity_uuid = nil;
 KBEngineLua.entity_id = 0;
 KBEngineLua.entity_type = "";
+
 -- 当前玩家最后一次同步到服务端的位置与朝向与服务端最后一次同步过来的位置
 KBEngineLua.entityLastLocalPos = Vector3.New(0.0, 0.0, 0.0);
 KBEngineLua.entityLastLocalDir = Vector3.New(0.0, 0.0, 0.0);
@@ -305,8 +306,12 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 			local setmethod = nil;--函数
 			if(Class ~= nil) then
 				setmethod = Class["set_" .. name];
+				print("rensiwei   "..scriptmethod_name.."set_" .. name);
 			end
 			
+			if(setmethod == nil) then
+				print(scriptmethod_name.."_rensiwei_Client_onImportClientEntityDef_notimplent"..properUtype..aliasID..name..defaultValStr..properFlags);
+			end
 			local savedata = {properUtype, aliasID, name, defaultValStr, utype, setmethod, properFlags};
 			self_propertys[name] = savedata;
 			

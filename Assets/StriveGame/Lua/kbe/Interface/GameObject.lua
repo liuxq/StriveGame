@@ -35,6 +35,18 @@ function KBEngineLua.Entity:set_name(old)
 	Event.Brocast("set_name", self, v);
 end
 
+function KBEngineLua.Entity:set_HP(old)--注意方法名区分大小写
+    local v = self.HP;
+--    print("rensiwei HP"..self.HP);
+    Event.Brocast("set_HP", self, v);
+end
+
+function KBEngineLua.Entity:set_HP_Max(old)
+    local v = self.HP_Max;
+    print("rensiwei HP_Max"..self.HP_Max);
+    Event.Brocast("set_HP_Max", self, v);
+end
+
 function KBEngineLua.Entity:set_state(old)
 	local v = self.state;
 	Event.Brocast("set_state", self, v);
