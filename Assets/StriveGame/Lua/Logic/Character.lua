@@ -52,19 +52,8 @@ function Character:SetName( name )
 end
 
 function Character:recvDamage( receiver, attacker, skillID, damageType, damage )
---    local HUDText = bl_HUDText.New();
---    if HUDText == nil then
---        print("rensiwei recvDamage: "..tostring(damage));
---    else
---        print("rensiwei recvDamage not nil : "..tostring(damage));
---    end
     local objHUDText = find("HUDText");
     local HUDText = objHUDText:GetComponent("bl_HUDText");
-    if HUDText == nil then
-        print("rensiwei recvDamage: "..tostring(damage));
-    else
-        print("rensiwei recvDamage not nil : "..tostring(damage));
-    end
     HUDText:NewText(tostring(damage),self.entity.renderObj.transform,Color.red,10,20,-1,2.5,0);--, 8, 20, -1, 2.2);
 --    bl_HUDText.NewText(tostring(damage),self.entity.renderObj.transform,Color.green0, 8, 20, -1, 2.2, 0);
 end
