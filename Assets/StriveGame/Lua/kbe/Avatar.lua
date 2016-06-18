@@ -125,12 +125,12 @@ function KBEngineLua.Avatar:onRemoveSkill(skillID)
     SkillBox.Remove(skillID);
 end
 
-function KBEngineLua.Avatar:set_HP_Max(old)
-    local v = self.HP_Max;
-    Event.Brocast("set_HP_Max", self, v);
-end
+--function KBEngineLua.Avatar:set_HP_Max(old)
+--    local v = self.HP_Max;
+--    Event.Brocast("set_HP_Max", self, v);
+--end
 
-function KBEngineLua.Avatar:set_MP_Max(old)
-    local v = self.MP_Max;
---    Event.Brocast("set_MP_Max", self, v);endendend
-end
+--function KBEngineLua.Avatar:set_MP_Max(old)
+--    local v = self.MP_Max;
+----    Event.Brocast("set_MP_Max", self, v);endendend
+--end

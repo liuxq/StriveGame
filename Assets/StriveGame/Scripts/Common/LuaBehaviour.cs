@@ -20,7 +20,10 @@ namespace LuaFramework {
 
         protected void Update()
         {
-            Util.CallMethod(name, "Tick");
+            LuaManager luaMgr = AppFacade.Instance.GetManager<LuaManager>(ManagerName.Lua);
+            if (luaMgr == null) return;
+            if (null != luaMgr.lua.GetFunction(name + "." + "Tick",false))
+                Util.CallMethod(name, "Tick");
         }
         protected void OnClick() {
             Util.CallMethod(name, "OnClick");

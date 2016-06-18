@@ -27,3 +27,8 @@ function LoginPanel.OnDestroy()
 	logWarn("OnDestroy---->>>");
 end
 
+function LoginPanel.Tick()
+	print("rensiwei int tick!");
+end
+
+

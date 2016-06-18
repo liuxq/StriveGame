@@ -151,18 +151,18 @@ function World.set_name( entity , v)
 	end
 end
 
-function World.set_HP( entity , v)
-    if entity:isPlayer() then
-        GameWorldCtrl.Set_HP(v);
-    end
-end
+--function World.set_HP( entity , v)
+--    if entity:isPlayer() then
+--        GameWorldCtrl.Set_HP(v);
+--    end
+--end
 
-function World.set_HP_Max( entity , v)
---    print("rensiwei Set_HP_Max"..v)
-    if entity:isPlayer() then--当前选择的角色
-        GameWorldCtrl.Set_HP_Max(v);
-    end
-end
+--function World.set_HP_Max( entity , v)
+----    print("rensiwei Set_HP_Max"..v)
+--    if entity:isPlayer() then--当前选择的角色
+--        GameWorldCtrl.Set_HP_Max(v);
+--    end
+--end
 
 function World.set_state( entity , v)
 	if entity.gameEntity then
