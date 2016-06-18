@@ -1,5 +1,5 @@
 CameraFollow = {
-	-- The target we are following
+    -- The target we are following
     target = nil,
     -- The distance in the x-z plane to the target
     distance = 15.0,
@@ -13,21 +13,23 @@ CameraFollow = {
     transform = nil;
 };
 
-function CameraFollow:ResetView( )
+local this = CameraFollow;
+
+function CameraFollow.ResetView( )
     -- Early out if we don't have a target
-    if (self.target == nil) then
+    if (this.target == nil) then
         return;
     end
 
-	self.transform = UnityEngine.Camera.main.transform;
+    this.transform = UnityEngine.Camera.main.transform;
     -- Calculate the current rotation angles
-    local wantedRotationAngle = self.target.eulerAngles.y;
-    local wantedHeight = self.target.position.y + self.height;
+    local wantedRotationAngle = this.target.eulerAngles.y;
+    local wantedHeight = this.target.position.y + this.height;
 
-    local currentHeight = self.transform.position.y;
+    local currentHeight = this.transform.position.y;
     currentHeight = wantedHeight;
     -- Damp the height
-    --currentHeight = Mathf.Lerp(currentHeight, wantedHeight, self.heightDamping * UnityEngine.Time.deltaTime);
+    --currentHeight = Mathf.Lerp(currentHeight, wantedHeight, this.heightDamping * UnityEngine.Time.deltaTime);
 
     -- Convert the angle into a rotation
     local currentRotation = Quaternion.Euler(0, wantedRotationAngle, 0);
@@ -35,31 +37,31 @@ function CameraFollow:ResetView( )
     --local currentRotation = 1;
 
     -- Set the position of the camera on the x-z plane to:
-    -- distance meters behind the self.target
-    self.transform.position = self.target.position;
+    -- distance meters behind the this.target
+    this.transform.position = this.target.position;
 
-    self.transform.position = self.transform.position - currentRotation * Vector3.forward * self.distance;
+    this.transform.position = this.transform.position - currentRotation * Vector3.forward * this.distance;
 
     -- Set the height of the camera
-    self.transform.position = Vector3.New(self.transform.position.x, currentHeight, self.transform.position.z);
+    this.transform.position = Vector3.New(this.transform.position.x, currentHeight, this.transform.position.z);
 
-    -- Always look at the self.target
-    self.transform:LookAt(self.target);
+    -- Always look at the this.target
+    this.transform:LookAt(this.target);
     UnityEngine.Camera.main.active = true;
 end
 
-function CameraFollow:FollowUpdate()
+function CameraFollow.FollowUpdate()
     -- Early out if we don't have a target
-    if (not self.target) then
+    if (not this.target) then
         return;
     end
 
     -- Calculate the current rotation angles
-    local wantedRotationAngle = self.target.eulerAngles.y;
-    local wantedHeight = self.target.position.y + self.height;
+    local wantedRotationAngle = this.target.eulerAngles.y;
+    local wantedHeight = this.target.position.y + this.height;
 
-    local currentRotationAngle = self.transform.eulerAngles.y;
-    local currentHeight = self.transform.position.y;
+    local currentRotationAngle = this.transform.eulerAngles.y;
+    local currentHeight = this.transform.position.y;
 
     local deltaAngle = wantedRotationAngle - currentRotationAngle;
     if (deltaAngle > 180.0) then deltaAngle = deltaAngle - 360;
@@ -69,10 +71,10 @@ function CameraFollow:FollowUpdate()
     if (deltaAngle < -90) then deltaAngle = -180 - deltaAngle; end
 
     -- Damp the rotation around the y-axis
-    currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, currentRotationAngle+deltaAngle, self.rotationDamping * Time.deltaTime);
+    currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, currentRotationAngle+deltaAngle, this.rotationDamping * Time.deltaTime);
 
     -- Damp the height
-    currentHeight = Mathf.Lerp(currentHeight, wantedHeight, self.heightDamping * UnityEngine.Time.deltaTime);
+    currentHeight = Mathf.Lerp(currentHeight, wantedHeight, this.heightDamping * UnityEngine.Time.deltaTime);
 
     -- Convert the angle into a rotation
     local currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
@@ -80,14 +82,14 @@ function CameraFollow:FollowUpdate()
     --local currentRotation = 1;
 
     -- Set the position of the camera on the x-z plane to:
-    -- distance meters behind the self.target
-    self.transform.position = self.target.position;
+    -- distance meters behind the this.target
+    this.transform.position = this.target.position;
 
-    self.transform.position = self.transform.position - currentRotation * Vector3.forward * self.distance;
+    this.transform.position = this.transform.position - currentRotation * Vector3.forward * this.distance;
 
     -- Set the height of the camera
-    self.transform.position = Vector3.New(self.transform.position.x,currentHeight,self.transform.position.z);
+    this.transform.position = Vector3.New(this.transform.position.x,currentHeight,this.transform.position.z);
 
-    -- Always look at the self.target
-    self.transform:LookAt(self.target);
+    -- Always look at the this.target
+    this.transform:LookAt(this.target);
 end

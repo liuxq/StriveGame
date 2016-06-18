@@ -1,10 +1,14 @@
 require "Logic/CameraFollow"
 require "Logic/InputControl"
 require "Logic/Character"
+require "Logic/SelectControl"
+require "Logic/SkillControl"
 require "Controller/GameWorldCtrl"
 require "Controller/MessageBoxCtrl"
 
 World = {};
+World = {
+};
 
 function World.init()
 	Event.AddListener("onAvatarEnterWorld", World.onAvatarEnterWorld);
@@ -34,8 +38,8 @@ function World.onAvatarEnterWorld( avatar )
 		go.transform.position = avatar.position;
 		--go.transform.direction = avatar.direction;
 		CameraFollow.target = go.transform;
-		CameraFollow:ResetView();
-		CameraFollow:FollowUpdate();
+		CameraFollow.ResetView();
+		CameraFollow.FollowUpdate();
 
 		InputControl.Init(avatar);
 		InputControl.OnEnable();
@@ -47,12 +51,22 @@ function World.onAvatarEnterWorld( avatar )
 		if joystick then
 			joystick.gameObject:SetActive(true);
 		end
+
+		--初始化角色技能控制
+		SkillControl.Init(avatar);
 	end);
 	
-    if(0 == GameWorldCtrl.hasAwake) then
+	if(0 == GameWorldCtrl.hasAwake) then
         GameWorldCtrl.Awake();
 	end
-    SelectAvatarCtrl.Close();
+	PlayerHeadCtrl.Awake();
+	TargetHeadCtrl.Awake();
+	
+	SelectAvatarCtrl.Close();
+
+	UpdateBeat:Add(SelectControl.Update);
+	UpdateBeat:Add(SkillControl.Update);
+	
 end
 
 function World.onEnterWorld( entity )
@@ -67,13 +81,13 @@ function World.onEnterWorld( entity )
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "Monster" then
-        resMgr:LoadPrefab('Model', { 'player' }, function(objs)
+		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "DroppedItem" then
-        resMgr:LoadPrefab('Model', { 'droppedItem' }, function(objs)
+		resMgr:LoadPrefab('Model', { 'droppedItem' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
@@ -85,7 +99,7 @@ function World.onEnterWorld( entity )
 			World.InitEntity(entity);
 		end);
 	elseif entity.className == "NPC" then
-        resMgr:LoadPrefab('Model', { 'entity' }, function(objs)
+		resMgr:LoadPrefab('Model', { 'player' }, function(objs)
 			entity.renderObj = newObject(objs[0]);
 			entity.renderObj.transform.position = entity.position;
 			World.InitEntity(entity);
@@ -95,22 +109,22 @@ function World.onEnterWorld( entity )
 end
 
 function World.InitEntity( entity )
-    if entity.className == "Gate" or entity.className == "DroppedItem" then
-        entity.gameEntity = GameEntity:New();
-    else
-        entity.gameEntity = Character:New();
-    end
-    entity.gameEntity:Init(entity);		
+	if entity.className == "Gate" or entity.className == "DroppedItem" then
+		entity.gameEntity = GameEntity:New();
+	else
+		entity.gameEntity = Character:New();
+	end
+	entity.gameEntity:Init(entity);		
 
-    if entity.name then
-        World.set_name( entity , entity.name )
-    end
+	if entity.name then
+		World.set_name( entity , entity.name )
+	end
 end
 
 function World.onLeaveWorld(entity)
-    if entity.gameEntity ~= nil then
-        entity.gameEntity:Destroy();
-    end
+	if entity.gameEntity ~= nil then
+		entity.gameEntity:Destroy();
+	end
 	if entity.renderObj ~= nil then
 		destroy(entity.renderObj);
 		entity.renderObj = nil;
@@ -124,17 +138,17 @@ function World.addSpaceGeometryMapping( path )
 end
 
 function World.set_position( entity )
-    entity.gameEntity:SetPosition(entity.position);
+	entity.gameEntity:SetPosition(entity.position);
 end
 
 function World.set_direction( entity )
-    entity.gameEntity.m_destDirection = Vector3.New(entity.direction.y, entity.direction.z, entity.direction.x);
+	entity.gameEntity.m_destDirection = Vector3.New(entity.direction.y, entity.direction.z, entity.direction.x);
 end
 
 function World.set_name( entity , v)
-    if entity.gameEntity then
-        entity.gameEntity:SetName(v);
-    end
+	if entity.gameEntity then
+		entity.gameEntity:SetName(v);
+	end
 end
 
 function World.set_HP( entity , v)
@@ -151,19 +165,54 @@ function World.set_HP_Max( entity , v)
 end
 
 function World.set_state( entity , v)
-    if entity.gameEntity then
-        entity.gameEntity:OnState(v);
+	if entity.gameEntity then
+		entity.gameEntity:OnState(v);
 	end
 	if entity:isPlayer() then
 		GameWorldCtrl.OnDie(v);
 	end
 end
 
+function World.set_HP( entity , v)
+	if entity.renderObj ~= nil then
+		if PlayerHeadCtrl.target == entity then
+			PlayerHeadCtrl.UpdateTargetUI();
+		end
+		if TargetHeadCtrl.target == entity then
+			TargetHeadCtrl.UpdateTargetUI();
+		end
+	end
+end
+
+function World.set_HP_Max( entity , v)
+	if entity.renderObj ~= nil then
+		if PlayerHeadCtrl.target == entity then
+			PlayerHeadCtrl.UpdateTargetUI();
+		end
+		if TargetHeadCtrl.target == entity then
+			TargetHeadCtrl.UpdateTargetUI();
+		end
+	end
+end
+
 function World.updatePosition( entity )
-    entity.gameEntity.m_destPosition = entity.position;
+	entity.gameEntity.m_destPosition = entity.position;
 end
 
 function World.recvDamage( receiver, attacker, skillID, damageType, damage )
+	local sk = SkillBox.Get(skillID);
+    if (sk ~= nil) then
+        local renderObj = attacker.renderObj;
+        renderObj:GetComponent("Animator"):Play("Punch");
+
+        if attacker:isPlayer() then   
+        	local dir = receiver.position - attacker.position; 
+            renderObj.transform:LookAt(Vector3.New(renderObj.transform.position.x + dir.x, renderObj.transform.position.y, renderObj.transform.position.z + dir.z));
+        end
+
+        --显示技能效果
+        sk:displaySkill(attacker, receiver);
+    end
 --    print("rensiwei a nil enity ： receiver"..receiver.."KBEngineLua.Avatar.id:"..KBEngineLua.Avatar.id1);
 --    local entity = KBEngineLua.findEntity(receiver);
 --    if(entity == nil) then 

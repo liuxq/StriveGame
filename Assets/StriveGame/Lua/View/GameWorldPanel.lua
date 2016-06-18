@@ -26,6 +26,10 @@ function GameWorldPanel.InitPanel()
     this.input_content = transform:FindChild("InputField_content"):GetComponent("InputField");
     this.Panel_PlayerHead = transform:FindChild("Panel_PalyerHead").gameObject;
     this.btnResetView = transform:FindChild("Button_resetView").gameObject;
+	this.btnSkill1 = transform:FindChild("Button_skill1").gameObject;
+	this.btnSkill2 = transform:FindChild("Button_skill2").gameObject;
+	this.btnSkill3 = transform:FindChild("Button_skill3").gameObject;
+	this.btnTabTarget = transform:FindChild("Button_tabTarget").gameObject;
 --    local name_text = GameWorldPanel.Panel_PlayerHead:FindChild("Text_PlayerName");
 
 end

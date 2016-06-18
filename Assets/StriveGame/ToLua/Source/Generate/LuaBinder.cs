@@ -12,6 +12,7 @@ public static class LuaBinder
 		DebuggerWrap.Register(L);
 		EasyJoystickWrap.Register(L);
 		MovingJoystickWrap.Register(L);
+		NcEffectFlyingWrap.Register(L);
 		bl_HUDTextWrap.Register(L);
 		ViewWrap.Register(L);
 		BaseWrap.Register(L);

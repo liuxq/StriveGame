@@ -31,6 +31,10 @@ function GameWorldCtrl.OnCreate(obj)
 	GameWorld:AddClick(GameWorldPanel.btnClose, this.OnClose);
 	GameWorld:AddClick(GameWorldPanel.btnSend, this.OnSendMessage);
     GameWorld:AddClick(GameWorldPanel.btnResetView, this.OnResetView);
+	GameWorld:AddClick(GameWorldPanel.btnSkill1, this.OnAttackSkill1);
+	GameWorld:AddClick(GameWorldPanel.btnSkill2, this.OnAttackSkill2);
+	GameWorld:AddClick(GameWorldPanel.btnSkill3, this.OnAttackSkill3);
+	GameWorld:AddClick(GameWorldPanel.btnTabTarget, this.OnTabTarget);
 
     logWarn("Start lua--->>"..gameObject.name);
     Event.AddListener("OnDie", this.OnDie);
@@ -39,10 +43,42 @@ function GameWorldCtrl.OnCreate(obj)
     Event.AddListener("Set_PlayerName", this.Set_PlayerName);
     Event.AddListener("ReceiveChatMessage", this.ReceiveChatMessage);
 
-    if p ~= nil then
+	Event.AddListener("OnDie", this.OnDie);
+	Event.AddListener("ReceiveChatMessage", this.ReceiveChatMessage);
+
+	--做一些初始化工作
+	local p = KBEngineLua.player();
+	if p ~= nil then
 		this.OnDie(p.state);
 	end
+	this.SetSkillButton();
+end
 
+--切换选择对象
+function GameWorldCtrl.OnTabTarget( )
+    local player = KBEngineLua.player();
+    if (player == nil) then
+        return;
+    end
+
+    local target = TargetHeadCtrl.target;
+
+    local mindis = 10000;
+    local minEntity = nil;
+    for i, entity in pairs(KBEngineLua.entities) do
+    	local obj = entity.renderObj;
+        if (obj ~= nil and obj.layer == LayerMask.NameToLayer("CanAttack") and entity.className == "Monster" and entity.HP > 0) then
+            local dis = Vector3.Distance(player.position, obj.transform.position);
+	        if (mindis > dis and (target == nil or target ~= nil and target ~= entity)) then
+	            mindis = dis;
+	            minEntity = entity;
+	        end
+        end
+    end
+    if minEntity ~= nil then
+        TargetHeadCtrl.target = minEntity;
+        TargetHeadCtrl.UpdateTargetUI();
+    end
 end
 
 function GameWorldCtrl.onclick()
@@ -83,6 +119,49 @@ function GameWorldCtrl.Close()
 	--panelMgr:ClosePanel(CtrlNames.Login);
 	destroy(gameObject);
 	Event.RemoveListener("onConnectStatus", this.onConnectStatus);
+end
+
+--设置技能按钮--
+function GameWorldCtrl.SetSkillButton()
+	if #SkillBox.skills == 3 then
+		GameWorldPanel.btnSkill1.transform:FindChild("Text"):GetComponent("Text").text = SkillBox.skills[1].name;
+		GameWorldPanel.btnSkill2.transform:FindChild("Text"):GetComponent("Text").text = SkillBox.skills[2].name;
+		GameWorldPanel.btnSkill3.transform:FindChild("Text"):GetComponent("Text").text = SkillBox.skills[3].name;
+	end
+end
+
+function GameWorldCtrl.AttackSkill(skillID )
+	local player = KBEngineLua.player();
+    
+    if (player == nil) then
+        return;
+    end
+
+    local target = TargetHeadCtrl.target;
+    if (player ~= nil) then        
+        local errorCode = player:useTargetSkill(skillID, target);
+        if (errorCode == 1) then            
+            log("目标太远");
+            --逼近目标
+            SkillControl.MoveTo(target.renderObj.transform, SkillBox.Get(skillID).canUseDistMax-1, skillID);
+        end
+        if (errorCode == 2) then            
+            log("技能冷却");
+        end
+        if (errorCode == 3) then            
+            log("目标已死亡");
+        end
+    end
+end
+
+function GameWorldCtrl.OnAttackSkill1( )
+	this.AttackSkill(SkillBox.skills[1].id);
+end
+function GameWorldCtrl.OnAttackSkill2( )
+	this.AttackSkill(SkillBox.skills[2].id);
+end
+function GameWorldCtrl.OnAttackSkill3( )
+	this.AttackSkill(SkillBox.skills[3].id);
 end
 
 ------------事件--
@@ -138,3 +217,5 @@ function GameWorldCtrl.ReceiveChatMessage(msg)
     GameWorldPanel.sb_vertical.value = 0;
     GameWorldPanel.input_content.text = "";
 end
+
+
