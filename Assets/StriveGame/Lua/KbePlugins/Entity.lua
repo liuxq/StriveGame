@@ -46,7 +46,7 @@ KBEngineLua.Entity.callPropertysSetMethods = function(self)
 		
 		if(setmethod ~= nil) then
             -- base类属性或者进入世界后cell类属性会触发set_*方法
-            print("rensiwei_"..self.className.."_callPropertysSetMethods_"..name);
+--            print("rensiwei_"..self.className.."_callPropertysSetMethods_"..name);
             if(flags == 0x00000020 or flags == 0x00000040) then
 				if(self.inited and not self.inWorld) then
 					setmethod(self, oldval);

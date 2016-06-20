@@ -8,7 +8,7 @@ function SelectControl.Update()
         local isHit, hit = UnityEngine.Physics.Raycast(ray, nil, 100.0, bit.lshift(1,LayerMask.NameToLayer("CanAttack")));
         if isHit then
             for i,v in pairs(KBEngineLua.entities) do
-            	if v.renderObj == hit.collider.gameObject then
+                if v.renderObj == hit.collider.gameObject and not v:isPlayer() then
             		TargetHeadCtrl.target = v;
             		TargetHeadCtrl.UpdateTargetUI();
             	end
