@@ -70,7 +70,7 @@ KBEngineLua._clientdatas = {};
 KBEngineLua._encryptedKey = "";
 
 -- 服务端与客户端的版本号以及协议MD5
-KBEngineLua.clientVersion = "0.8.0";
+KBEngineLua.clientVersion = "0.8.10";
 KBEngineLua.clientScriptVersion = "0.1.0";
 KBEngineLua.serverVersion = "";
 KBEngineLua.serverScriptVersion = "";
@@ -735,7 +735,7 @@ KBEngineLua.Client_onEntityEnterWorld = function(stream)
 		entityType = stream:readUint8();
 	end
 	
-	local isOnGround = true;
+	local isOnGround = 1;
 	
 	if(stream:length() > 0) then
 		isOnGround = stream:readInt8();
@@ -1052,17 +1052,17 @@ KBEngineLua.Client_getSpaceData = function(spaceID, key)
 	return KBEngineLua.spacedata[key];
 end
 
-KBEngineLua.Client_onUpdateBasePos = function(stream)
+KBEngineLua.Client_onUpdateBasePos = function(x, y, z)
 
-	KBEngineLua.entityServerPos.x = stream:readFloat();
-	KBEngineLua.entityServerPos.y = stream:readFloat();
-	KBEngineLua.entityServerPos.z = stream:readFloat();
+	KBEngineLua.entityServerPos.x = x;
+	KBEngineLua.entityServerPos.y = y;
+	KBEngineLua.entityServerPos.z = z;
 end
 
-KBEngineLua.Client_onUpdateBasePosXZ = function(stream)
+KBEngineLua.Client_onUpdateBasePosXZ = function(x, z)
 
-	KBEngineLua.entityServerPos.x = stream:readFloat();
-	KBEngineLua.entityServerPos.z = stream:readFloat();
+	KBEngineLua.entityServerPos.x = x;
+	KBEngineLua.entityServerPos.z = z;
 end
 
 KBEngineLua.Client_onUpdateData = function(stream)
