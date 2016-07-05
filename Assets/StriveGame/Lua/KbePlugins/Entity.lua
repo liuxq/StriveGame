@@ -5,6 +5,10 @@
 
 KBEngineLua.Entity = 
 {
+	-- 当前玩家最后一次同步到服务端的位置与朝向
+	-- 这两个属性是给引擎KBEngine.cs用的，别的地方不要修改
+	_entityLastLocalPos = Vector3.New(0.0, 0.0, 0.0),
+	_entityLastLocalDir = Vector3.New(0.0, 0.0, 0.0),
 	id = 0,
 	className = "",
 	position = Vector3.New(0.0, 0.0, 0.0),

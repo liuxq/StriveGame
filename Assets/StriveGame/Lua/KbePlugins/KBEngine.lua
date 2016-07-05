@@ -38,9 +38,7 @@ KBEngineLua.KBE_FLT_MAX	= 3.402823466e+38;
 KBEngineLua.entity_uuid = nil;
 KBEngineLua.entity_id = 0;
 KBEngineLua.entity_type = "";
--- 当前玩家最后一次同步到服务端的位置与朝向与服务端最后一次同步过来的位置
-KBEngineLua.entityLastLocalPos = Vector3.New(0.0, 0.0, 0.0);
-KBEngineLua.entityLastLocalDir = Vector3.New(0.0, 0.0, 0.0);
+
 KBEngineLua.entityServerPos = Vector3.New(0.0, 0.0, 0.0);
 -- 玩家是否在地面上
 KBEngineLua.isOnGround = false;
@@ -942,15 +940,15 @@ KBEngineLua.updatePlayerToServer = function()
     this._lastUpdateToServerTime = os.clock();
 
     --log(player.position.x .. " " .. player.position.y);
-	if(Vector3.Distance(KBEngineLua.entityLastLocalPos, player.position) > 0.001 or Vector3.Distance(KBEngineLua.entityLastLocalDir, player.direction) > 0.001) then
+	if(Vector3.Distance(player._entityLastLocalPos, player.position) > 0.001 or Vector3.Distance(player._entityLastLocalDir, player.direction) > 0.001) then
 	
 		-- 记录玩家最后一次上报位置时自身当前的位置
-		KBEngineLua.entityLastLocalPos.x = player.position.x;
-		KBEngineLua.entityLastLocalPos.y = player.position.y;
-		KBEngineLua.entityLastLocalPos.z = player.position.z;
-		KBEngineLua.entityLastLocalDir.x = player.direction.x;
-		KBEngineLua.entityLastLocalDir.y = player.direction.y;
-		KBEngineLua.entityLastLocalDir.z = player.direction.z;	
+		player._entityLastLocalPos.x = player.position.x;
+		player._entityLastLocalPos.y = player.position.y;
+		player._entityLastLocalPos.z = player.position.z;
+		player._entityLastLocalDir.x = player.direction.x;
+		player._entityLastLocalDir.y = player.direction.y;
+		player._entityLastLocalDir.z = player.direction.z;	
 						
 		local bundle = KBEngineLua.Bundle:New();
 		bundle:newMessage(KBEngineLua.messages["Baseapp_onUpdateDataFromClient"]);
@@ -1092,12 +1090,12 @@ KBEngineLua.Client_onSetEntityPosAndDir = function(stream)
 	entity.direction.z = stream:readFloat();
 	
 	-- 记录玩家最后一次上报位置时自身当前的位置
-	KBEngineLua.entityLastLocalPos.x = entity.position.x;
-	KBEngineLua.entityLastLocalPos.y = entity.position.y;
-	KBEngineLua.entityLastLocalPos.z = entity.position.z;
-	KBEngineLua.entityLastLocalDir.x = entity.direction.x;
-	KBEngineLua.entityLastLocalDir.y = entity.direction.y;
-	KBEngineLua.entityLastLocalDir.z = entity.direction.z;	
+	entity._entityLastLocalPos.x = entity.position.x;
+	entity._entityLastLocalPos.y = entity.position.y;
+	entity._entityLastLocalPos.z = entity.position.z;
+	entity._entityLastLocalDir.x = entity.direction.x;
+	entity._entityLastLocalDir.y = entity.direction.y;
+	entity._entityLastLocalDir.z = entity.direction.z;	
 			
 	entity:set_direction(entity.direction);
 	entity:set_position(entity.position);

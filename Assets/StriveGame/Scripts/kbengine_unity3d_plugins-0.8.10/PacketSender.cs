@@ -25,17 +25,24 @@
 		int _sending = 0;
 		
 		private NetworkInterface _networkInterface = null;
+		AsyncCallback _asyncCallback = null;
 		
         public PacketSender(NetworkInterface networkInterface)
         {
         	_init(networkInterface);
         }
 
+		~PacketSender()
+		{
+			Dbg.DEBUG_MSG("PacketSender::~PacketSender(), destroyed!");
+		}
+
 		void _init(NetworkInterface networkInterface)
 		{
 			_networkInterface = networkInterface;
-
+			
             _buffer = new byte[NetworkInterface.SEND_BUFFER_MAX];
+			_asyncCallback = new AsyncCallback(_onSent);
 			
 			_wpos = 0; 
 			_spos = 0;
@@ -116,7 +123,7 @@
 			try
 			{
 				_networkInterface.sock().BeginSend(_buffer, _spos % _buffer.Length, sendSize, 0,
-         		   new AsyncCallback(_onSent), this);
+         		   _asyncCallback, this);
 			}
 			catch (Exception e) 
 			{

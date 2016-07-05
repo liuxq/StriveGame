@@ -19,6 +19,7 @@
     public class PacketReceiver 
     {
 		private NetworkInterface _networkInterface = null;
+		AsyncCallback _asyncCallback = null;
 
 		private byte[] _buffer;
 		
@@ -33,10 +34,16 @@
         	_init(networkInterface);
         }
 
+		~PacketReceiver()
+		{
+			Dbg.DEBUG_MSG("PacketReceiver::~PacketReceiver(), destroyed!");
+		}
+
 		void _init(NetworkInterface networkInterface)
 		{
 			_networkInterface = networkInterface;
             _buffer = new byte[NetworkInterface.RECV_BUFFER_MAX];
+			_asyncCallback = new AsyncCallback(_onRecv);
 			
 		}
 		
@@ -115,7 +122,7 @@
 			try
 			{
 				_networkInterface.sock().BeginReceive(_buffer, _wpos, space, 0,
-			            new AsyncCallback(_onRecv), this);
+						_asyncCallback, this);
 			}
 			catch (Exception e) 
 			{
