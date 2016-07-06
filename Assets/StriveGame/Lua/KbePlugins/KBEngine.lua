@@ -1320,7 +1320,7 @@ KBEngineLua.Client_onUpdateData_xyz_pr = function(stream)
 	local p = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, x, y, z, KBEngineLua.KBE_FLT_MAX, p, r, 0);
+	KBEngineLua._updateVolatileData(eid, xz.x, y, xz.y, KBEngineLua.KBE_FLT_MAX, p, r, 0);
 end
 
 KBEngineLua.Client_onUpdateData_xyz_y = function(stream)
