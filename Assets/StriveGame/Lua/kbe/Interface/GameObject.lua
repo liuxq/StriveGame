@@ -20,37 +20,40 @@ function KBEngineLua.GameObject:set_position( old )
 	end
 end
 
-function KBEngineLua.Entity:set_direction(old)
+function KBEngineLua.GameObject:set_direction(old)
 	--log(self.className .. "::set_direction: " .. old.x ..old.y ..old.z);  	
 	self.direction.x = self.direction.x * 360 / (Mathf.PI * 2);
 	self.direction.y = self.direction.y * 360 / (Mathf.PI * 2);
 	self.direction.z = self.direction.z * 360 / (Mathf.PI * 2);
+
+	--Event.Brocast("set_direction", entity);	
 	--log(className + "::set_direction: " + old + " => " + v); 
-	-- if(inWorld)
-	-- 	Event.fireOut("set_direction", new object[]{this});
+	if(self.inWorld) then
+		Event.Brocast("set_direction", entity);
+	end
 end
 
-function KBEngineLua.Entity:set_name(old)
+function KBEngineLua.GameObject:set_name(old)
 	local v = self.name;
 	Event.Brocast("set_name", self, v);
 end
 
-function KBEngineLua.Entity:set_state(old)
+function KBEngineLua.GameObject:set_state(old)
 	local v = self.state;
 	Event.Brocast("set_state", self, v);
 end
 
-function KBEngineLua.Entity:set_HP(old)
+function KBEngineLua.GameObject:set_HP(old)
 	local v = self.HP;
 	Event.Brocast("set_HP", self, v);
 end
 
-function KBEngineLua.Entity:set_HP_Max(old)
+function KBEngineLua.GameObject:set_HP_Max(old)
 	local v = self.HP_Max;
 	Event.Brocast("set_HP_Max", self, v);
 end
 
-function KBEngineLua.Entity:recvDamage(attackerID, skillID, damageType, damage)
+function KBEngineLua.GameObject:recvDamage(attackerID, skillID, damageType, damage)
 --Dbg.DEBUG_MSG(className + "::recvDamage: attackerID=" + attackerID + ", skillID=" + skillID + ", damageType=" + damageType + ", damage=" + damage);
 			
 	local entity = KBEngineLua.findEntity(attackerID);

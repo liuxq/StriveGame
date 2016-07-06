@@ -1354,9 +1354,9 @@ KBEngineLua.Client_onUpdateData_xyz_r = function(stream)
 	local xz = stream:readPackXZ();
 	local y = stream:readPackY();
 	
-	local p = stream:readInt8();
+	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, y, xz.y, r, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, 0);
+	KBEngineLua._updateVolatileData(eid, xz.x, y, xz.y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, r, 0);
 end
 
 KBEngineLua._updateVolatileData = function(entityID, x, y, z, yaw, pitch, roll, isOnGround)
