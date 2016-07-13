@@ -21,15 +21,11 @@ function KBEngineLua.GameObject:set_position( old )
 end
 
 function KBEngineLua.GameObject:set_direction(old)
-	--log(self.className .. "::set_direction: " .. old.x ..old.y ..old.z);  	
-	self.direction.x = self.direction.x * 360 / (Mathf.PI * 2);
-	self.direction.y = self.direction.y * 360 / (Mathf.PI * 2);
-	self.direction.z = self.direction.z * 360 / (Mathf.PI * 2);
-
-	--Event.Brocast("set_direction", entity);	
-	--log(className + "::set_direction: " + old + " => " + v); 
+	-- self.direction.x = self.direction.x * 360 / (Mathf.PI * 2);
+	-- self.direction.y = self.direction.y * 360 / (Mathf.PI * 2);
+	-- self.direction.z = self.direction.z * 360 / (Mathf.PI * 2);
 	if(self.inWorld) then
-		Event.Brocast("set_direction", entity);
+		Event.Brocast("set_direction", self);
 	end
 end
 

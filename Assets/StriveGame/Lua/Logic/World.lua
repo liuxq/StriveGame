@@ -7,6 +7,8 @@ require "Logic/SkillControl"
 World = {
 };
 
+local convertRad2Angle = 360 / (Mathf.PI * 2);
+
 function World.init()
 	Event.AddListener("onAvatarEnterWorld", World.onAvatarEnterWorld);
 	Event.AddListener("onEnterWorld", World.onEnterWorld);
@@ -115,6 +117,12 @@ function World.InitEntity( entity )
 	if entity.name then
 		World.set_name( entity , entity.name )
 	end
+	if entity.direction then
+		World.set_direction( entity )
+	end
+	if entity.position then
+		World.set_position( entity )
+	end
 end
 
 function World.onLeaveWorld(entity)
@@ -138,7 +146,10 @@ function World.set_position( entity )
 end
 
 function World.set_direction( entity )
-	entity.gameEntity.m_destDirection = Vector3.New(entity.direction.y, entity.direction.z, entity.direction.x);
+	entity.gameEntity.m_destDirection = Vector3.New();
+	entity.gameEntity.m_destDirection.x = entity.direction.y * convertRad2Angle;
+	entity.gameEntity.m_destDirection.y = entity.direction.z * convertRad2Angle;
+	entity.gameEntity.m_destDirection.z = entity.direction.x * convertRad2Angle;
 end
 
 function World.set_name( entity , v)

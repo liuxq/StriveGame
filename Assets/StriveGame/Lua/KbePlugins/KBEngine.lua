@@ -1146,7 +1146,7 @@ KBEngineLua.Client_onUpdateData_y = function(stream)
 
 	local eid = KBEngineLua.getAoiEntityIDFromStream(stream);
 	
-	local y = stream:readPackY();
+	local y = stream:readInt8();
 	
 	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, -1);
 end
@@ -1379,17 +1379,17 @@ KBEngineLua._updateVolatileData = function(entityID, x, y, z, yaw, pitch, roll, 
 	
 	if(roll ~= KBEngineLua.KBE_FLT_MAX) then
 		changeDirection = true;
-		entity.direction.x = KBEngineLua.int82angle(roll, false) * 360 / (Mathf.PI * 2);
+		entity.direction.x = KBEngineLua.int82angle(roll, false);
 	end
 
 	if(pitch ~= KBEngineLua.KBE_FLT_MAX) then
 		changeDirection = true;
-		entity.direction.y = KBEngineLua.int82angle(pitch, false) * 360 / (Mathf.PI * 2);
+		entity.direction.y = KBEngineLua.int82angle(pitch, false);
 	end
 	
 	if(yaw ~= KBEngineLua.KBE_FLT_MAX) then
 		changeDirection = true;
-		entity.direction.z = KBEngineLua.int82angle(yaw, false) * 360 / (Mathf.PI * 2);
+		entity.direction.z = KBEngineLua.int82angle(yaw, false);
 	end
 	
 	local done = false;
