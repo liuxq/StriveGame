@@ -8,6 +8,7 @@
 	using System.Text;
     using System.Threading; 
 	using System.Runtime.InteropServices;
+    using LuaInterface;
 	
 	/*
 		二进制数据流模块
@@ -74,7 +75,7 @@
 		public Int64 readInt64()
 		{
 			rpos += 8;
-			return BitConverter.ToInt64(datas_, rpos - 8);
+            return new LuaInteger64(BitConverter.ToInt64(datas_, rpos - 8));
 		}
 		
 		public Byte readUint8()
@@ -93,11 +94,11 @@
 			rpos += 4;
 			return BitConverter.ToUInt32(datas_, rpos - 4);
 		}
-		
-		public UInt64 readUint64()
+
+        public LuaInteger64 readUint64()
 		{
 			rpos += 8;
-			return BitConverter.ToUInt64(datas_, rpos - 8);
+            return new LuaInteger64((long)BitConverter.ToUInt64(datas_, rpos - 8));
 		}
 		
 		public float readFloat()
@@ -197,8 +198,8 @@
 			for(int i=0; i<4; i++)
 				writeInt8((SByte)(v >> i * 8 & 0xff));
 		}
-	
-		public void writeInt64(Int64 v)
+
+        public void writeInt64(LuaInteger64 v)
 		{
 			byte[] getdata = BitConverter.GetBytes(v);
 			for(int i=0; i<getdata.Length; i++)
@@ -223,8 +224,8 @@
 			for(int i=0; i<4; i++)
 				writeUint8((Byte)(v >> i * 8 & 0xff));
 		}
-	
-		public void writeUint64(UInt64 v)
+
+        public void writeUint64(LuaInteger64 v)
 		{
 			byte[] getdata = BitConverter.GetBytes(v);
 			for(int i=0; i<getdata.Length; i++)
