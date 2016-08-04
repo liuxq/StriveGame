@@ -71,8 +71,8 @@
 			rpos += 4;
 			return BitConverter.ToInt32(datas_, rpos - 4);
 		}
-	
-		public Int64 readInt64()
+
+        public LuaInteger64 readInt64()
 		{
 			rpos += 8;
             return new LuaInteger64(BitConverter.ToInt64(datas_, rpos - 8));
