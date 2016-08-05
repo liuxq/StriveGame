@@ -1520,7 +1520,7 @@ end
 KBEngineLua.Client_onLoginFailed = function(stream)
 	local failedcode = stream:readUint16();
 	this._serverdatas = stream:readBlob();
-	log("KBEngine::Client_onLoginFailed: failedcode(" .. failedcode .. "), datas(" .. _serverdatas.Length .. ")!");
+	log("KBEngine::Client_onLoginFailed: failedcode(" .. failedcode .. "), datas(" .. this._serverdatas.Length .. ")!");
 	Event.Brocast("onLoginFailed", failedcode);
 end
 
@@ -1530,10 +1530,10 @@ KBEngineLua.Client_onLoginSuccessfully = function(stream)
 	this.baseappIP = stream:readString();
 	this.baseappPort = stream:readUint16();
 
-	_serverdatas = stream:readBlob();
+	this._serverdatas = stream:readBlob();
 	
 	log("KBEngine::Client_onLoginSuccessfully: accountName(" .. accountName .. "), addr(" .. 
-			this.baseappIP .. ":" .. this.baseappPort .. "), datas(" .. #this._serverdatas .. ")!");
+			this.baseappIP .. ":" .. this.baseappPort .. "), datas(" .. this._serverdatas.Length .. ")!");
 	
 	this.login_baseapp(true);
 end
