@@ -40,8 +40,6 @@ KBEngineLua.entity_id = 0;
 KBEngineLua.entity_type = "";
 
 KBEngineLua.entityServerPos = Vector3.New(0.0, 0.0, 0.0);
--- 玩家是否在地面上
-KBEngineLua.isOnGround = false;
 
 -- 空间的信息
 KBEngineLua.spacedata = {};
@@ -958,7 +956,7 @@ KBEngineLua.updatePlayerToServer = function()
 		bundle:writeFloat(player.direction.x);
 		bundle:writeFloat(player.direction.y);
 		bundle:writeFloat(player.direction.z);
-		bundle:writeUint8((KBEngineLua.isOnGround and 1) or 0);
+		bundle:writeUint8((player.isOnGround and 1) or 0);
 		bundle:writeUint32(KBEngineLua.spaceID);
 		bundle:send();
 
@@ -1594,6 +1592,9 @@ KBEngineLua.reset = function()
 
 	this._lastticktime = os.clock();
 	this._lastUpdateToServerTime = os.clock();
+
+	this.spacedata = {};
+	this.entityIDAliasIDList = {};
 	
 end
 
