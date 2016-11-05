@@ -1785,7 +1785,7 @@ KBEngineLua.reLoginBaseapp = function()
 	this._networkInterface:connectTo(this.baseappIP, this.baseappPort, this.onReConnectTo_baseapp_callback, nil);
 end
 
-KBEngine.onReConnectTo_baseapp_callback = function(ip, port, success, userData)
+KBEngineLua.onReConnectTo_baseapp_callback = function(ip, port, success, userData)
 	if not success then
 		log("KBEngine::reLoginBaseapp(): connect "..ip..":"..port.." is error!");
 		return;
