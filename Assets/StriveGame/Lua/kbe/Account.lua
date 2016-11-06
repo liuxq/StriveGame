@@ -34,7 +34,7 @@ function KBEngineLua.Account:reqRemoveAvatar(name)
 end
 
 function KBEngineLua.Account:reqSelectAvatarGame(dbid)
-    log("Account::reqSelectAvatarGame: dbid=" .. int64.tostring(dbid));
+    log("Account::reqSelectAvatarGame: dbid=" .. tostring(dbid));
     self:baseCall({"selectAvatarGame", dbid});
 end
 

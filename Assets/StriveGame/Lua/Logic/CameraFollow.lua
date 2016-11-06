@@ -47,7 +47,7 @@ function CameraFollow.ResetView( )
 
     -- Always look at the this.target
     this.transform:LookAt(this.target);
-    UnityEngine.Camera.main.active = true;
+    -- UnityEngine.Camera.main.active = true;
 end
 
 function CameraFollow.FollowUpdate()

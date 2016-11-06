@@ -79,11 +79,6 @@ namespace LuaInterface
         {
             get
             {
-                if (key < 1)
-                {
-                    throw new LuaException(string.Format("array index out of bounds: {0}", key));                    
-                }
-
                 int oldTop = luaState.LuaGetTop();
 
                 try
@@ -103,11 +98,6 @@ namespace LuaInterface
 
             set
             {
-                if (key < 1)
-                {                    
-                    throw new LuaException("array index out of bounds: " + key);                          
-                }
-
                 int oldTop = luaState.LuaGetTop();
 
                 try
@@ -311,14 +301,13 @@ namespace LuaInterface
             this.state = table.GetLuaState();
         }
 
-        ~LuaArrayTable()
-        {
-            table.Dispose(false);
-        }
-
         public void Dispose()
         {
-            table.Dispose(true);            
+            if (table != null)
+            {
+                table.Dispose();
+                table = null;
+            }
         }
 
         public int Length
@@ -405,16 +394,14 @@ namespace LuaInterface
             this.state = table.GetLuaState() ;
         }
 
-        ~LuaDictTable()
-        {
-            table.Dispose(false);
-        }
-
         public void Dispose()
         {
-            table.Dispose(true);            
+            if (table != null)
+            {
+                table.Dispose();
+                table = null;
+            }
         }
-
 
         public object this[string key]
         {

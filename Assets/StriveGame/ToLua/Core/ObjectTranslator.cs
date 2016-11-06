@@ -21,6 +21,7 @@ SOFTWARE.
 */
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace LuaInterface
@@ -37,7 +38,7 @@ namespace LuaInterface
             }
 
             public int id;
-            public UnityEngine.Object obj = null;
+            public UnityEngine.Object obj;
             public float time;
         }
 
@@ -50,12 +51,7 @@ namespace LuaInterface
 
             public int GetHashCode(object obj)
             {
-                if (obj != null)
-                {
-                    return obj.GetHashCode();
-                }
-
-                return 0;
+                return RuntimeHelpers.GetHashCode(obj);                
             }
         }
 
@@ -64,12 +60,13 @@ namespace LuaInterface
         public readonly LuaObjectPool objects = new LuaObjectPool();
         private List<DelayGC> gcList = new List<DelayGC>();
 
+#if !MULTI_STATE
         private static ObjectTranslator _translator = null;
+#endif
 
         public ObjectTranslator()
         {
             LogGC = false;
-
 #if !MULTI_STATE
             _translator = this;
 #endif
@@ -121,7 +118,7 @@ namespace LuaInterface
             return objects.TryGetValue(udata);         
         }
 
-        //删除，但不移除一个lua对象(移除id只能由gc完成)
+        //预删除，但不移除一个lua对象(移除id只能由gc完成)
         public void Destroy(int udata)
         {            
             object o = objects.Destroy(udata);
@@ -159,9 +156,7 @@ namespace LuaInterface
 
         public void SetBack(int index, object o)
         {
-            object obj = objects.Replace(index, o);
-            objectsBackMap.Remove(obj);
-            objectsBackMap[o] = index;
+            objects.Replace(index, o);            
         }
 
         bool RemoveFromGCList(int id)
