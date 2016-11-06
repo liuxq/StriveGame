@@ -1,7 +1,5 @@
 # StriveGame(Unity5 + ULUA + kbengine)
 
-* 2016-11-6 升级lua插件到tolua#1.0.6.266
-* 2016-5 升级kbengine服务器版本到0.8.10
 
 * 使用Unity+KBEngine开发的mmo游戏demo的第二版，主要工作是将KBE的客户端插件以及大部分游戏逻辑Lua化，实现客户端热更新
 
@@ -17,3 +15,11 @@
 ![ui-demo2](/config.png)
 ###### 游戏截图
 ![ui-demo2](/strivegamedemo.png)
+
+//-------------2016-11-06-------------
+(1)升级lua插件到tolua#1.0.6.266
+
+//-------------2016-6-06-------------
+(1)升级kbengine服务器版本到0.8.10
+
+
