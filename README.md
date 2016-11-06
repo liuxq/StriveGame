@@ -9,6 +9,15 @@
 
 * 使用kbengine-0.8.10版本，服务器脚本在：[MyGameServerAssets](https://github.com/liuxq/MyGameServerAssets.git)
 
+//-------------2016-11-06-------------
+
+(1)升级lua插件到tolua#1.0.6.266
+
+//-------------2016-6-06-------------
+
+(1)升级kbengine服务器版本到0.8.10
+
+
 ###### lua代码结构说明   
 ![ui-demo](/structure.png)
 ###### ip、port等配置位置
@@ -16,10 +25,6 @@
 ###### 游戏截图
 ![ui-demo2](/strivegamedemo.png)
 
-//-------------2016-11-06-------------
-(1)升级lua插件到tolua#1.0.6.266
 
-//-------------2016-6-06-------------
-(1)升级kbengine服务器版本到0.8.10
 
 
