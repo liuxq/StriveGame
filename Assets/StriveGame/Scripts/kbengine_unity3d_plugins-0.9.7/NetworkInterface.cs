@@ -193,36 +193,26 @@
             _socket = null;
         }
 
-        public bool send(byte[] datas)
-        {
-			if(!valid()) 
+		public bool send(MemoryStream stream)
+		{
+			if (!valid())
 			{
-			   throw new ArgumentException ("invalid socket!");
+				throw new ArgumentException("invalid socket!");
 			}
-			
-			if(_packetSender == null)
+
+			if (_packetSender == null)
 				_packetSender = new PacketSender(this);
-			
-			try
-			{
-				return _packetSender.send(datas);
-			}
-			catch (SocketException err)
-			{
-				Dbg.ERROR_MSG(string.Format("NetworkInterface::send(): socket error(" + err.ErrorCode + ")!"));
-				close();
-			}
-			
-			return false;
-        }
-        
-        public void process()
-        {
-        	if(!valid())
-        		return;
-        	
-        	if(_packetReceiver != null)
-        		_packetReceiver.process();
-        }
+
+			return _packetSender.send(stream);
+		}
+
+		public void process()
+		{
+			if (!valid())
+				return;
+
+			if (_packetReceiver != null)
+				_packetReceiver.process();
+		}
 	}
-} 
+}

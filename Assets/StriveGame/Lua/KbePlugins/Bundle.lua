@@ -78,7 +78,7 @@ function KBEngineLua.Bundle:send()
 	if(networkInterface:valid()) then
 		for i = 1, #self.streamList, 1 do
 			self.stream = self.streamList[i];
-			networkInterface:send(self.stream:getbuffer());
+			networkInterface:send(self.stream);
 		end
 	else
 		log("Bundle::send: networkInterface invalid!");  

@@ -139,7 +139,12 @@ function KBEngineLua.MessageReader.process(datas, offset, length)
 				if(msg.msglen == -1) then
 					reader.state = KBEngineLua.READ_STATE_MSGLEN;
 					reader.expectSize = 2;
-				else
+				elseif(msg.msglen == 0) then
+					-- 如果是0个参数的消息，那么没有后续内容可读了，处理本条消息并且直接跳到下一条消息
+					msg:handleMessage(stream);
+					state = KBEngineLua.READ_STATE_MSGID;
+					expectSize = 2;
+				else		
 					reader.expectSize = msg.msglen;
 					reader.state = KBEngineLua.READ_STATE_BODY;
 				end

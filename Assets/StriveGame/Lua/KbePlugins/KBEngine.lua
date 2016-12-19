@@ -66,7 +66,7 @@ KBEngineLua._clientdatas = {};
 KBEngineLua._encryptedKey = "";
 
 -- 服务端与客户端的版本号以及协议MD5
-KBEngineLua.clientVersion = "0.8.10";
+KBEngineLua.clientVersion = "0.9.0";
 KBEngineLua.clientScriptVersion = "0.1.0";
 KBEngineLua.serverVersion = "";
 KBEngineLua.serverScriptVersion = "";
@@ -81,7 +81,7 @@ KBEngineLua.entityIDAliasIDList = {};
 KBEngineLua.bufferedCreateEntityMessage = {};
 
 -- 持久化
-KBEngineLua._persistentInofs = nil;
+KBEngineLua._persistentInfos = nil;
 
 -- 是否正在加载本地消息协议
 KBEngineLua.loadingLocalMessages_ = false;
@@ -116,7 +116,7 @@ end
 KBEngineLua.InitEngine = function()
 	this._networkInterface = KBEngine.NetworkInterface.New();
 	KBEngineLua.Message.bindFixedMessage();
-	this._persistentInofs = KBEngine.PersistentInofs.New(Util.DataPath);
+	this._persistentInfos = KBEngine.PersistentInofs.New(Util.DataPath);
 
 	FixedUpdateBeat:Add(this.process, this);
 end
@@ -252,8 +252,8 @@ end
 KBEngineLua.Client_onImportClientEntityDef = function(stream)
 	local datas = stream:getbuffer();
 	this.onImportClientEntityDef(stream);
-	if(this._persistentInofs ~= nil) then
-		this._persistentInofs:onImportClientEntityDef(datas);
+	if(this._persistentInfos ~= nil) then
+		this._persistentInfos:onImportClientEntityDef(datas);
 	end
 end
 
@@ -262,19 +262,19 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 
 	while(stream:length() > 0)
 	do
-		local scriptmethod_name = stream:readString();
+		local scriptmodule_name = stream:readString();
 		local scriptUtype = stream:readUint16();
 		local propertysize = stream:readUint16();
 		local methodsize = stream:readUint16();
 		local base_methodsize = stream:readUint16();
 		local cell_methodsize = stream:readUint16();
 		
-		log("KBEngineApp::Client_onImportClientEntityDef: import(" .. scriptmethod_name .. "), propertys(" .. propertysize .. "), " ..
+		log("KBEngineApp::Client_onImportClientEntityDef: import(" .. scriptmodule_name .. "), propertys(" .. propertysize .. "), " ..
 				"clientMethods(" .. methodsize .. "), baseMethods(" .. base_methodsize .. "), cellMethods(" .. cell_methodsize .. ")~");
 		
-		KBEngineLua.moduledefs[scriptmethod_name] = {};
-		local currModuleDefs = KBEngineLua.moduledefs[scriptmethod_name];
-		currModuleDefs["name"] = scriptmethod_name;
+		KBEngineLua.moduledefs[scriptmodule_name] = {};
+		local currModuleDefs = KBEngineLua.moduledefs[scriptmodule_name];
+		currModuleDefs["name"] = scriptmodule_name;
 		currModuleDefs["propertys"] = {};
 		currModuleDefs["methods"] = {};
 		currModuleDefs["base_methods"] = {};
@@ -286,7 +286,7 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 		local self_base_methods = currModuleDefs["base_methods"];
 		local self_cell_methods= currModuleDefs["cell_methods"];
 		
-		local Class = KBEngineLua[scriptmethod_name];
+		local Class = KBEngineLua[scriptmodule_name];
 
 		while(propertysize > 0)
 		do
@@ -314,7 +314,7 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 				currModuleDefs["usePropertyDescrAlias"] = false;
 			end
 			
-			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmethod_name .. "), property(" .. name .. "/" .. properUtype .. ").");
+			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmodule_name .. "), property(" .. name .. "/" .. properUtype .. ").");
 		end
 		while(methodsize > 0)
 		do
@@ -343,7 +343,7 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 				currModuleDefs["useMethodDescrAlias"] = false;
 			end
 			
-			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmethod_name .. "), method(" .. name .. ").");
+			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmodule_name .. "), method(" .. name .. ").");
 		end
 
 		while(base_methodsize > 0)
@@ -363,7 +363,7 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 			end
 			
 			self_base_methods[name] = {methodUtype, aliasID, name, args};
-			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmethod_name .. "), base_method(" .. name .. ").");
+			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmodule_name .. "), base_method(" .. name .. ").");
 		end
 		
 		while(cell_methodsize > 0)
@@ -383,12 +383,12 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 			end
 			
 			self_cell_methods[name] = {methodUtype, aliasID, name, args};
-			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmethod_name .. "), cell_method(" .. name .. ").");
+			log("KBEngineApp::Client_onImportClientEntityDef: add(" .. scriptmodule_name .. "), cell_method(" .. name .. ").");
 		end
 		
-		defmethod = KBEngineLua[scriptmethod_name];
+		defmethod = KBEngineLua[scriptmodule_name];
 		if defmethod == nil then
-			log("KBEngineApp::Client_onImportClientEntityDef: module(" .. scriptmethod_name .. ") not found~");
+			log("KBEngineApp::Client_onImportClientEntityDef: module(" .. scriptmodule_name .. ") not found~");
 		end
 		
 		for k, value in pairs(currModuleDefs.propertys) do
@@ -412,7 +412,7 @@ KBEngineLua.onImportClientEntityDef = function(stream)
 			local args = infos[4];
 			
 			if(defmethod ~= nil and defmethod[name] == nil) then
-				log(scriptmethod_name .. ":: method(" .. name .. ") no implement~");
+				log(scriptmodule_name .. ":: method(" .. name .. ") no implement~");
 			end
 		end
 	end
@@ -423,8 +423,8 @@ KBEngineLua.Client_onImportClientMessages = function( stream )
 	local datas = stream:getbuffer();
 	this.onImportClientMessages (stream);
 	
-	if(this._persistentInofs ~= nil) then
-		this._persistentInofs:onImportClientMessages(this.currserver, datas);
+	if(this._persistentInfos ~= nil) then
+		this._persistentInfos:onImportClientMessages(this.currserver, datas);
 	end
 end
 
@@ -480,8 +480,8 @@ KBEngineLua.Client_onImportServerErrorsDescr = function(stream)
 	local datas = stream:getbuffer();
 	this.onImportServerErrorsDescr(stream);
 	
-	if(this._persistentInofs ~= nil) then
-		this._persistentInofs:onImportServerErrorsDescr(datas);
+	if(this._persistentInfos ~= nil) then
+		this._persistentInfos:onImportServerErrorsDescr(datas);
 	end
 end
 
@@ -1486,8 +1486,8 @@ KBEngineLua.Client_onHelloCB = function( stream )
 end
 
 KBEngineLua.onServerDigest = function()
-	if this._persistentInofs ~= nil then
-		this._persistentInofs:onServerDigest(this.currserver, this.serverProtocolMD5, this.serverEntitydefMD5);
+	if this._persistentInfos ~= nil then
+		this._persistentInfos:onServerDigest(this.currserver, this.serverProtocolMD5, this.serverEntitydefMD5);
 	end
 end
 
@@ -1752,8 +1752,8 @@ KBEngineLua.Client_onVersionNotMatch = function(stream)
 	log("Client_onVersionNotMatch: verInfo=" .. this.clientVersion .. "(server: " .. this.serverVersion .. ")");
 	--Event.fireAll("onVersionNotMatch", new object[]{clientVersion, serverVersion});
 	
-	if(this._persistentInofs ~= nil) then
-		this._persistentInofs:onVersionNotMatch(this.clientVersion, this.serverVersion);
+	if(this._persistentInfos ~= nil) then
+		this._persistentInfos:onVersionNotMatch(this.clientVersion, this.serverVersion);
 	end
 end
 
@@ -1765,8 +1765,8 @@ KBEngineLua.Client_onScriptVersionNotMatch = function(stream)
 	log("Client_onScriptVersionNotMatch: verInfo=" .. this.clientScriptVersion .. "(server: " .. this.serverScriptVersion .. ")");
 	--Event.fireAll("onScriptVersionNotMatch", new object[]{clientScriptVersion, this.serverScriptVersion});
 	
-	if(_persistentInofs ~= nil) then
-		_persistentInofs.onScriptVersionNotMatch(this.clientScriptVersion, this.serverScriptVersion);
+	if(_persistentInfos ~= nil) then
+		_persistentInfos.onScriptVersionNotMatch(this.clientScriptVersion, this.serverScriptVersion);
 	end
 end
 
