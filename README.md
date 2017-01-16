@@ -8,6 +8,7 @@
 * 目前游戏内容并没有实现完全，可以仿照游戏第一版[TestGame](https://github.com/liuxq/TestGame)中的C#逻辑改写Lua代码补全游戏功能
 
 * 使用kbengine-0.9.7版本，服务器脚本在：[MyGameServerAssets](https://github.com/liuxq/MyGameServerAssets.git)
+
 //-------------2017-01-01-------------
 
 (1)升级kbengine到v0.9.7
