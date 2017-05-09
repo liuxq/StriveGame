@@ -293,15 +293,10 @@ KBEngineLua.DATATYPE_VECTOR2 =
 	end,
 	
 	createFromStream = function(self, stream)
-		local size = stream:readUint32();
-		if(2 ~= size)then
-			log("KBEDATATYPE_VECTOR2::createFromStream: size({0}) is error!");
-		end
 		return Vector2.New(stream:readFloat(), stream:readFloat());
 	end,
 	
 	addToStream = function(self, stream, v)
-		stream:writeUint32(2);
 		stream:writeFloat(v.x);
 		stream:writeFloat(v.y);
 	end,
@@ -320,15 +315,10 @@ KBEngineLua.DATATYPE_VECTOR3 =
 	end,
 	
 	createFromStream = function(self, stream)
-		local size = stream:readUint32();
-		if(3 ~= size)then
-			log("KBEDATATYPE_VECTOR2::createFromStream: size({0}) is error!");
-		end
 		return Vector3.New(stream:readFloat(), stream:readFloat(), stream:readFloat());
 	end,
 	
 	addToStream = function(self, stream, v)
-		stream:writeUint32(3);
 		stream:writeFloat(v.x);
 		stream:writeFloat(v.y);
 		stream:writeFloat(v.z);
@@ -349,15 +339,10 @@ KBEngineLua.DATATYPE_VECTOR4 =
 	end,
 	
 	createFromStream = function(self, stream)
-		local size = stream:readUint32();
-		if(4 ~= size)then
-			log("KBEDATATYPE_VECTOR2::createFromStream: size({0}) is error!");
-		end
 		return Vector4.New(stream:readFloat(), stream:readFloat(), stream:readFloat(), stream:readFloat());
 	end,
 	
 	addToStream = function(self, stream, v)
-		stream:writeUint32(2);
 		stream:writeFloat(v.x);
 		stream:writeFloat(v.y);
 		stream:writeFloat(v.z);

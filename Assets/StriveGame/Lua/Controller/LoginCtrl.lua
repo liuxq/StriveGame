@@ -28,7 +28,7 @@ function LoginCtrl.OnCreate(obj)
 
 	logWarn("Start lua--->>"..gameObject.name);
 
-	Event.AddListener("onConnectStatus", this.onConnectStatus);
+	Event.AddListener("onConnectionState", this.onConnectionState);
 	Event.AddListener("onLoginSuccessfully", this.onLoginSuccessfully);
 	Event.AddListener("onLoginFailed", this.onLoginFailed);
 	Event.AddListener("onCreateAccountResult", this.onCreateAccountResult);
@@ -54,7 +54,7 @@ end
 function LoginCtrl.Close()
 	--panelMgr:ClosePanel(CtrlNames.Login);
 	destroy(gameObject);
-	Event.RemoveListener("onConnectStatus", this.onConnectStatus);
+	Event.RemoveListener("onConnectionState", this.onConnectionState);
 	Event.RemoveListener("onLoginSuccessfully", this.onLoginSuccessfully);
 	Event.RemoveListener("onLoginFailed", this.onLoginFailed);
 	Event.RemoveListener("onCreateAccountResult", this.onCreateAccountResult);
@@ -72,7 +72,7 @@ function LoginCtrl.onReqAvatarList( avatarList )
         ctrl.Awake();
     end
 end
-function LoginCtrl.onConnectStatus( isSuccess )
+function LoginCtrl.onConnectionState( isSuccess )
 	if isSuccess == true then
 		LoginPanel.textStatus:GetComponent('Text').text = "连接成功，正在登陆";
 	else

@@ -104,7 +104,6 @@ end
 function GameWorldCtrl.Close()
 	--panelMgr:ClosePanel(CtrlNames.Login);
 	destroy(gameObject);
-	Event.RemoveListener("onConnectStatus", this.onConnectStatus);
 end
 
 --设置技能按钮--

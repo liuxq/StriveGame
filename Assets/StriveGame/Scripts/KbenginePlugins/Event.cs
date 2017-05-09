@@ -5,7 +5,6 @@
 	using System.Collections; 
 	using System.Collections.Generic;
 	using System.Threading;
-    using LuaInterface;
 	
 	/*
 		事件模块
@@ -16,7 +15,6 @@
 		public struct Pair
 		{
 			public object obj;
-            public LuaTable luaObj;//针对lua
 			public string funcname;
 			public System.Reflection.MethodInfo method;
 		};
@@ -129,12 +127,6 @@
 			return register(events_out, eventname, obj, funcname);
 		}
 
-        //注册lua方法
-        public static bool registerOut(string eventname,LuaTable luaObj, string funcname)
-        {
-            return register(events_out, eventname, luaObj, funcname);
-        }
-
 		/*
 			注册监听由渲染表现层抛出的事件(in = render->kbe)
 			通常由kbe插件层来注册， 例如：UI层点击登录， 此时需要触发一个事件给kbe插件层进行与服务端交互的处理。
@@ -143,38 +135,6 @@
 		{
 			return register(events_in, eventname, obj, funcname);
 		}
-        //lua
-        public static bool registerIn(string eventname,LuaTable luaObj, string funcname)
-        {
-            return register(events_in, eventname, luaObj, funcname);
-        }
-
-        //注册lua方法
-        private static bool register(Dictionary<string, List<Pair>> events, string eventname,LuaTable luaObj, string funcname)
-        {
-            deregister(events, eventname, luaObj, funcname);
-            List<Pair> lst = null;
-
-            Pair pair = new Pair();
-            pair.funcname = funcname;
-            pair.luaObj = luaObj;
-
-            monitor_Enter(events);
-            if (!events.TryGetValue(eventname, out lst))
-            {
-                lst = new List<Pair>();
-                lst.Add(pair);
-                //Dbg.DEBUG_MSG("Event::register: event(" + eventname + ")!");
-                events.Add(eventname, lst);
-                monitor_Exit(events);
-                return true;
-            }
-
-            //Dbg.DEBUG_MSG("Event::register: event(" + eventname + ")!");
-            lst.Add(pair);
-            monitor_Exit(events);
-            return true;
-        }
 		
 		private static bool register(Dictionary<string, List<Pair>> events, string eventname, object obj, string funcname)
 		{
@@ -184,14 +144,13 @@
 			Pair pair = new Pair();
 			pair.obj = obj;
 			pair.funcname = funcname;
-            
-            pair.method = obj.GetType().GetMethod(funcname);
-            if (pair.method == null)
-            {
-                Dbg.ERROR_MSG("Event::register: " + obj + "not found method[" + funcname + "]");
-                return false;
-            }
-            
+			pair.method = obj.GetType().GetMethod(funcname);
+			if(pair.method == null)
+			{
+				Dbg.ERROR_MSG("Event::register: " + obj + "not found method[" + funcname + "]");
+				return false;
+			}
+			
 			monitor_Enter(events);
 			if(!events.TryGetValue(eventname, out lst))
 			{
@@ -213,21 +172,11 @@
 		{
 			return deregister(events_out, eventname, obj, funcname);
 		}
-        //析构lua事件
-        public static bool deregisterOut(string eventname, LuaTable luaObj, string funcname)
-        {
-            return deregister(events_out, eventname, luaObj, funcname);
-        }
 
 		public static bool deregisterIn(string eventname, object obj, string funcname)
 		{
 			return deregister(events_in, eventname, obj, funcname);
 		}
-        //析构lua事件
-        public static bool deregisterIn(string eventname, LuaTable luaObj, string funcname)
-        {
-            return deregister(events_in, eventname, luaObj, funcname);
-        }
 		
 		private static bool deregister(Dictionary<string, List<Pair>> events, string eventname, object obj, string funcname)
 		{
@@ -255,33 +204,6 @@
 			return false;
 		}
 
-        //lua function
-        private static bool deregister(Dictionary<string, List<Pair>> events, string eventname, LuaTable luaObj, string funcname)
-        {
-            monitor_Enter(events);
-            List<Pair> lst = null;
-
-            if (!events.TryGetValue(eventname, out lst))
-            {
-                monitor_Exit(events);
-                return false;
-            }
-
-            for (int i = 0; i < lst.Count; i++)
-            {
-                if (funcname == lst[i].funcname && luaObj == lst[i].luaObj)
-                {
-                    //Dbg.DEBUG_MSG("Event::deregister: event(" + eventname + ":" + funcname + ")!");
-                    lst.RemoveAt(i);
-                    monitor_Exit(events);
-                    return true;
-                }
-            }
-
-            monitor_Exit(events);
-            return false;
-        }
-
 		public static bool deregisterOut(object obj)
 		{
 			return deregister(events_out, obj);
@@ -296,17 +218,17 @@
 		{
 			monitor_Enter(events);
 			
-			foreach(KeyValuePair<string, List<Pair>> e in events)
+			var iter = events.GetEnumerator();
+			while (iter.MoveNext())
 			{
-				List<Pair> lst = e.Value;
-__RESTART_REMOVE:
-				for(int i=0; i<lst.Count; i++)
+				List<Pair> lst = iter.Current.Value;
+				// 从后往前遍历，以避免中途删除的问题
+				for (int i = lst.Count - 1; i >= 0; i--)
 				{
-					if(obj == lst[i].obj)
+					if (obj == lst[i].obj)
 					{
 						//Dbg.DEBUG_MSG("Event::deregister: event(" + e.Key + ":" + lst[i].funcname + ")!");
 						lst.RemoveAt(i);
-						goto __RESTART_REMOVE;
 					}
 				}
 			}
@@ -376,9 +298,10 @@ __RESTART_REMOVE:
 
 			if(firedEvents_out.Count > 0)
 			{
-				foreach(EventObj evt in firedEvents_out)
+				var iter = firedEvents_out.GetEnumerator();
+				while (iter.MoveNext())
 				{
-					doingEvents_out.AddLast(evt);
+					doingEvents_out.AddLast(iter.Current);
 				}
 
 				firedEvents_out.Clear();
@@ -386,37 +309,28 @@ __RESTART_REMOVE:
 
 			monitor_Exit(events_out);
 
-			while (doingEvents_out.Count > 0 && !_isPauseOut)
-            {
+			while (doingEvents_out.Count > 0 && !_isPauseOut) 
+			{
 
-                EventObj eobj = doingEvents_out.First.Value;
+				EventObj eobj = doingEvents_out.First.Value;
 
-                //Debug.Log("processOutEvents:" + eobj.info.funcname + "(" + eobj.info + ")");
-                //foreach(object v in eobj.args)
-                //{
-                //	Debug.Log("processOutEvents:args=" + v);
-                //}
-                //if (eobj.info.luaObj != null)//如果是lua方法
-                //{
-                //    object [] argList = new object[]{};
-                //    LuaFramework.Util.CallMethod(eobj.info.funcname, 
-                //    //eobj.info.func.Call(eobj.args);
-                //}
-                //else
-                {
-                    try
-                    {
-                        eobj.info.method.Invoke(eobj.info.obj, eobj.args);
-                    }
-                    catch (Exception e)
-                    {
-                        Dbg.ERROR_MSG("Event::processOutEvents: event=" + eobj.info.funcname + "\n" + e.ToString());
-                    }
-                }
-
-                if (doingEvents_out.Count > 0)
-                    doingEvents_out.RemoveFirst();
-            }
+				//Debug.Log("processOutEvents:" + eobj.info.funcname + "(" + eobj.info + ")");
+				//foreach(object v in eobj.args)
+				//{
+				//	Debug.Log("processOutEvents:args=" + v);
+				//}
+				try
+				{
+					eobj.info.method.Invoke (eobj.info.obj, eobj.args);
+				}
+	            catch (Exception e)
+	            {
+	            	Dbg.ERROR_MSG("Event::processOutEvents: event=" + eobj.info.funcname + "\n" + e.ToString());
+	            }
+            
+				if(doingEvents_out.Count > 0)
+					doingEvents_out.RemoveFirst();
+			}
 		}
 		
 		public static void processInEvents()
@@ -425,9 +339,10 @@ __RESTART_REMOVE:
 
 			if(firedEvents_in.Count > 0)
 			{
-				foreach(EventObj evt in firedEvents_in)
+				var iter = firedEvents_in.GetEnumerator();
+				while (iter.MoveNext())
 				{
-					doingEvents_in.AddLast(evt);
+					doingEvents_in.AddLast(iter.Current);
 				}
 
 				firedEvents_in.Clear();
@@ -445,21 +360,14 @@ __RESTART_REMOVE:
 				//{
 				//	Debug.Log("processInEvents:args=" + v);
 				//}
-                //if (eobj.info.func != null)//如果是lua方法
-                //{
-                //    eobj.info.func.Call(eobj.args);
-                //}
-                //else
-                {
-                    try
-                    {
-                        eobj.info.method.Invoke(eobj.info.obj, eobj.args);
-                    }
-                    catch (Exception e)
-                    {
-                        Dbg.ERROR_MSG("Event::processInEvents: event=" + eobj.info.funcname + "\n" + e.ToString());
-                    }
-                }
+				try
+				{
+					eobj.info.method.Invoke (eobj.info.obj, eobj.args);
+				}
+	            catch (Exception e)
+	            {
+	            	Dbg.ERROR_MSG("Event::processInEvents: event=" + eobj.info.funcname + "\n" + e.ToString());
+	            }
 	            
 				if(doingEvents_in.Count > 0)
 					doingEvents_in.RemoveFirst();

@@ -10,13 +10,13 @@ namespace KBEngine
 	/*
 		持久化引擎协议，在检测到协议版本发生改变时会清理协议
 	*/
-	public class PersistentInofs
+	public class PersistentInfos
 	{
 		string _persistentDataPath = "";
 		bool _isGood = false;
 		string _digest = "";
 		
-	    public PersistentInofs(string path)
+	    public PersistentInfos(string path)
 	    {
 	    	_persistentDataPath = path;
 	    	installEvents();
@@ -81,7 +81,7 @@ namespace KBEngine
 				}
 				catch(Exception e)
 				{
-					Dbg.ERROR_MSG("PersistentInofs::loadAll(): is error(" + e.ToString() + ")!");  
+					Dbg.ERROR_MSG("PersistentInfos::loadAll(): is error(" + e.ToString() + ")!");  
 					clearMessageFiles();
 					return false;
 				}

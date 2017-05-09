@@ -77,10 +77,5 @@ end
 
 --关闭事件--
 function CreateAvatarCtrl.Close()
-	--KBEEvent.deregisterOut("onConnectStatus", this.onConnectStatus);
-	--KBEEvent.deregisterOut("onCreateAvatarSuccessfully", this.onCreateAvatarSuccessfully);
-    --KBEEvent.deregisterOut("onCreateAvatarFailed", this.onCreateAvatarFailed);
-
-	--panelMgr:ClosePanel(CtrlNames.CreateAvatar);
 	destroy(gameObject);
 end

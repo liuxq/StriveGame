@@ -118,7 +118,7 @@ KBEngineLua.MessageReader = {
 	state = KBEngineLua.READ_STATE_MSGID,
 	stream = KBEngine.MemoryStream.New(),
 };
-local reader = KBEngineLua.MessageReader;--
+local reader = KBEngineLua.MessageReader;
 
 
 function KBEngineLua.MessageReader.process(datas, offset, length)

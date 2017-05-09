@@ -66,7 +66,7 @@ KBEngineLua._clientdatas = {};
 KBEngineLua._encryptedKey = "";
 
 -- 服务端与客户端的版本号以及协议MD5
-KBEngineLua.clientVersion = "0.9.0";
+KBEngineLua.clientVersion = "0.9.12";
 KBEngineLua.clientScriptVersion = "0.1.0";
 KBEngineLua.serverVersion = "";
 KBEngineLua.serverScriptVersion = "";
@@ -116,7 +116,7 @@ end
 KBEngineLua.InitEngine = function()
 	this._networkInterface = KBEngine.NetworkInterface.New();
 	KBEngineLua.Message.bindFixedMessage();
-	this._persistentInfos = KBEngine.PersistentInofs.New(Util.DataPath);
+	this._persistentInfos = KBEngine.PersistentInfos.New(Util.DataPath);
 
 	FixedUpdateBeat:Add(this.process, this);
 end
