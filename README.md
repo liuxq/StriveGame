@@ -9,6 +9,10 @@
 
 * 使用kbengine-0.9.7版本，服务器脚本在：[MyGameServerAssets](https://github.com/liuxq/MyGameServerAssets.git)
 
+//-------------2017-05-09-------------
+
+(1)升级kbengine到v0.9.13
+
 //-------------2017-01-01-------------
 
 (1)升级kbengine到v0.9.7
