@@ -2,6 +2,7 @@
 KBEngineLua = {}
 local this = KBEngineLua;
 
+require "KbePlugins/LuaUtil"
 require "KbePlugins/DataType"
 require "KbePlugins/Message"
 require "KbePlugins/Bundle"
@@ -13,6 +14,7 @@ require "Kbe/Gate"
 require "Kbe/Monster"
 require "Kbe/NPC"
 require "Kbe/DroppedItem"
+
 
 -----------------可配置信息---------------
 KBEngineLua.ip = "127.0.0.1";
@@ -35,11 +37,16 @@ KBEngineLua.MAILBOX_TYPE_BASE = 1;
 KBEngineLua.KBE_FLT_MAX	= 3.402823466e+38;
 
 ----- player的相关信息
+-- 当前玩家的实体id与实体类别
 KBEngineLua.entity_uuid = nil;
 KBEngineLua.entity_id = 0;
 KBEngineLua.entity_type = "";
 
+KBEngineLua.controlledEntities = {};
+
 KBEngineLua.entityServerPos = Vector3.New(0.0, 0.0, 0.0);
+
+KBEngineLua.syncPlayer = true;
 
 -- 空间的信息
 KBEngineLua.spacedata = {};
@@ -92,7 +99,8 @@ KBEngineLua.entitydefImported_ = false;
 KBEngineLua.isImportServerErrorsDescr_ = false;
 
 -- 控制网络间隔
-KBEngineLua._lastticktime = os.clock();
+KBEngineLua._lastTickTime = os.clock();
+KBEngineLua._lastTickCBTime = os.clock();
 KBEngineLua._lastUpdateToServerTime = os.clock();
 
 --网络接口
@@ -550,44 +558,48 @@ KBEngineLua.Client_onCreatedProxies = function(rndUUID, eid, entityType)
 
 	log("KBEngineApp::Client_onCreatedProxies: eid(" .. eid .. "), entityType(" .. entityType .. ")!");
 	
+	this.entity_uuid = rndUUID;
+	this.entity_id = eid;
+	this.entity_type = entityType;
+
 	local entity = KBEngineLua.entities[eid];
 	
-	if(entity ~= nil) then
-		log("KBEngineApp::Client_onCreatedProxies: entity(" .. eid .. ") has exist!");
-		return;
-	end
-			
-	KBEngineLua.entity_uuid = rndUUID;
-	KBEngineLua.entity_id = eid;
-	KBEngineLua.entity_type = entityType;
-	
-	local runclass = KBEngineLua[entityType];
-	if(runclass == nil) then
-		return;
-	end
-	
-	local entity = runclass:New();
-	entity.id = eid;
-	entity.className = entityType;
-	
-	entity.base = KBEngineLua.Mailbox:New();
-	entity.base.id = eid;
-	entity.base.className = entityType;
-	entity.base.type = KBEngineLua.MAILBOX_TYPE_BASE;
-	
-	KBEngineLua.entities[eid] = entity;
-	
-	local entityMessage = KBEngineLua.bufferedCreateEntityMessage[eid];
-	if(entityMessage ~= nil) then
-		KBEngineLua.Client_onUpdatePropertys(entityMessage);
-		KBEngineLua.bufferedCreateEntityMessage[eid] = nil;
-	end
+	if(entity == nil) then		
+		local runclass = KBEngineLua[entityType];
+		if(runclass == nil) then
+			log("KBEngine::Client_onCreatedProxies: not found module(" .. entityType .. ")!");
+			return;
+		end
 		
-	entity:__init__();
-	entity.inited = true;
-	
-	if(KBEngineLua.isOnInitCallPropertysSetMethods) then
-		entity:callPropertysSetMethods();
+		local entity = runclass:New();
+		entity.id = eid;
+		entity.className = entityType;
+		
+		entity.base = KBEngineLua.Mailbox:New();
+		entity.base.id = eid;
+		entity.base.className = entityType;
+		entity.base.type = KBEngineLua.MAILBOX_TYPE_BASE;
+		
+		KBEngineLua.entities[eid] = entity;
+		
+		local entityMessage = KBEngineLua.bufferedCreateEntityMessage[eid];
+		if(entityMessage ~= nil) then
+			KBEngineLua.Client_onUpdatePropertys(entityMessage);
+			KBEngineLua.bufferedCreateEntityMessage[eid] = nil;
+		end
+			
+		entity:__init__();
+		entity.inited = true;
+		
+		if(KBEngineLua.isOnInitCallPropertysSetMethods) then
+			entity:callPropertysSetMethods();
+		end
+	else
+		local entityMessage = KBEngineLua.bufferedCreateEntityMessage[eid];
+		if(entityMessage ~= nil) then
+			KBEngineLua.Client_onUpdatePropertys(entityMessage);
+			KBEngineLua.bufferedCreateEntityMessage[eid] = nil;
+		end
 	end
 end
 
@@ -827,21 +839,17 @@ KBEngineLua.Client_onEntityLeaveWorld = function(eid)
 	if(entity.inWorld) then
 		entity:leaveWorld();
 	end
-	
-	if(KBEngineLua.entity_id > 0 and eid ~= KBEngineLua.entity_id) then
-	
-		KBEngineLua.entities[eid] = nil;
-		
-		local newArray = {};
-		for  i= 1, #KBEngineLua.entityIDAliasIDList do
-			if(KBEngineLua.entityIDAliasIDList[i] ~= eid) then
-				table.insert(newArray, KBEngineLua.entityIDAliasIDList[i]);
-			end
-		end
-		KBEngineLua.entityIDAliasIDList = newArray
-	else
-		KBEngineLua.clearSpace(false);
+
+	if(this.entity_id == eid) then
+		this.clearSpace(false);
 		entity.cell = nil;
+	else
+		table.removeItem(this.controlledEntities, entity, false);
+		--if(_controlledEntities.Remove(entity))
+		--	Event.fireOut("onLoseControlledEntity", new object[]{entity});
+		this.entities[eid] = nil;
+		entity:onDestroy();
+		table.removeItem(this.entityIDAliasIDList, eid, false);
 	end
 end
 
@@ -860,8 +868,14 @@ KBEngineLua.Client_onEntityDestroyed = function(eid)
 		end
 		entity:leaveWorld();
 	end
+
+	table.removeItem(this.controlledEntities, entity, false);
+	--if(_controlledEntities.Remove(entity))
+	--	Event.fireOut("onLoseControlledEntity", new object[]{entity});
 		
 	KBEngineLua.entities[eid] = nil;
+	entity.onDestroy();
+
 end
 
 KBEngineLua.Client_onEntityEnterSpace = function(stream)
@@ -886,6 +900,7 @@ KBEngineLua.Client_onEntityEnterSpace = function(stream)
 	entity:enterSpace();
 end
 
+--服务端通知当前玩家离开了space
 KBEngineLua.Client_onEntityLeaveSpace = function(eid)
 	local entity = KBEngineLua.entities[eid];
 	if(entity == nil) then
@@ -897,11 +912,7 @@ KBEngineLua.Client_onEntityLeaveSpace = function(eid)
 	entity:leaveSpace();
 end
 
-KBEngineLua.Client_onKicked = function(failedcode)
-	log("KBEngineApp::Client_onKicked: failedcode(" .. KBEngineLua.serverErrs[failedcode].name .. ")!");
-	KBEngine.Event.fire("onKicked", failedcode);
-end
-
+--账号创建返回结果
 KBEngineLua.Client_onCreateAccountResult = function(stream)
 
 	local retcode = stream:readUint16();
@@ -918,24 +929,54 @@ KBEngineLua.Client_onCreateAccountResult = function(stream)
 	log("KBEngineApp::Client_onCreateAccountResult: " .. KBEngineLua.username .. " create is successfully!");
 end
 
-KBEngineLua.updatePlayerToServer = function()
 
-	if this.spaceID == 0 then 
+--	告诉客户端：你当前负责（或取消）控制谁的位移同步
+KBEngineLua.Client_onControlEntity = function(eid, isControlled)
+
+	local entity = this.entities[eid];
+
+	if (entity == nil) then
+		log("KBEngine::Client_onControlEntity: entity(" .. eid .. ") not found!");
 		return;
 	end
 
-	local span = os.clock() - this._lastUpdateToServerTime; 
+	local isCont = isControlled ~= 0;
+	if (isCont) then
+		-- 如果被控制者是玩家自己，那表示玩家自己被其它人控制了
+		-- 所以玩家自己不应该进入这个被控制列表
+		if (this.player().id ~= entity.id) then
+			table.insert(this.controlledEntities, entity);
+		end
+	else
+		table.removeItem(this.controlledEntities, entity, false);
+	end
+	
+	entity.isControlled = isCont;
+	
+	entity.onControlled(isCont);
+	--Event.fireOut("onControlled", new object[]{entity, isCont});
+end
+
+KBEngineLua.updatePlayerToServer = function()
+
+	if not this.syncPlayer or this.spaceID == 0 then 
+		return;
+	end
+
+	local now = os.clock();
+
+	local span = now - this._lastUpdateToServerTime; 
 	if(span < 0.05) then
 		return;
 	end
 
 	local player = KBEngineLua.player();
 	
-	if(player == nil or player.inWorld == false or KBEngineLua.spaceID == 0) then
+	if(player == nil or player.inWorld == false or KBEngineLua.spaceID == 0 or player.isControlled) then
 		return;
     end
 
-    this._lastUpdateToServerTime = os.clock();
+    this._lastUpdateToServerTime = now - (span - 0.05);
 
     --log(player.position.x .. " " .. player.position.y);
 	if(Vector3.Distance(player._entityLastLocalPos, player.position) > 0.001 or Vector3.Distance(player._entityLastLocalDir, player.direction) > 0.001) then
@@ -957,9 +998,52 @@ KBEngineLua.updatePlayerToServer = function()
 		bundle:writeFloat(player.direction.y);
 		bundle:writeFloat(player.direction.z);
 		bundle:writeUint8((player.isOnGround and 1) or 0);
-		bundle:writeUint32(KBEngineLua.spaceID);
+		bundle:writeUint32(this.spaceID);
 		bundle:send();
+	end
 
+	-- 开始同步所有被控制了的entity的位置
+	for i, e in ipairs(this.controlledEntities) do
+		local entity = this.controlledEntities[i];
+		position = entity.position;
+		direction = entity.direction;
+
+		posHasChanged = Vector3.Distance(entity._entityLastLocalPos, position) > 0.001;
+		dirHasChanged = Vector3.Distance(entity._entityLastLocalDir, direction) > 0.001;
+
+		if (posHasChanged or dirHasChanged) then
+			entity._entityLastLocalPos = position;
+			entity._entityLastLocalDir = direction;
+
+			local bundle = KBEngineLua.Bundle:New();
+			bundle:newMessage(Message.messages["Baseapp_onUpdateDataFromClientForControlledEntity"]);
+			bundle:writeInt32(entity.id);
+			bundle:writeFloat(position.x);
+			bundle:writeFloat(position.y);
+			bundle:writeFloat(position.z);
+
+			--double x = ((double)direction.x / 360 * (System.Math.PI * 2));
+			--double y = ((double)direction.y / 360 * (System.Math.PI * 2));
+			--double z = ((double)direction.z / 360 * (System.Math.PI * 2));
+		
+			-- 根据弧度转角度公式会出现负数
+			-- unity会自动转化到0~360度之间，这里需要做一个还原
+			--if(x - System.Math.PI > 0.0)
+			--	x -= System.Math.PI * 2;
+
+			--if(y - System.Math.PI > 0.0)
+			--	y -= System.Math.PI * 2;
+			
+			--if(z - System.Math.PI > 0.0)
+			--	z -= System.Math.PI * 2;
+			
+			bundle:writeFloat(direction.x);
+			bundle:writeFloat(direction.y);
+			bundle:writeFloat(direction.z);
+			bundle:writeUint8((entity.isOnGround and 1) or 0);
+			bundle:writeUint32(this.spaceID);
+			bundle:send();
+		end
 	end
 end
 
@@ -981,6 +1065,9 @@ KBEngineLua.clearSpace = function(isAll)
 end
 
 KBEngineLua.clearEntities = function(isAll)
+
+	this.controlledEntities = {};
+
 	if(not isAll) then
 		local entity = KBEngineLua.player();
 		for eid, e in pairs(KBEngineLua.entities) do
@@ -1050,15 +1137,47 @@ end
 
 KBEngineLua.Client_onUpdateBasePos = function(x, y, z)
 
-	KBEngineLua.entityServerPos.x = x;
-	KBEngineLua.entityServerPos.y = y;
-	KBEngineLua.entityServerPos.z = z;
+	this.entityServerPos.x = x;
+	this.entityServerPos.y = y;
+	this.entityServerPos.z = z;
+
+	local entity = this.player();
+	if (entity ~= nil and entity.isControlled) then
+		entity.position.x = _entityServerPos.x;
+		entity.position.y = _entityServerPos.y;
+		entity.position.z = _entityServerPos.z;
+		Event.Brocast("updatePosition", entity);
+		entity.onUpdateVolatileData();
+	end
 end
 
 KBEngineLua.Client_onUpdateBasePosXZ = function(x, z)
 
 	KBEngineLua.entityServerPos.x = x;
 	KBEngineLua.entityServerPos.z = z;
+
+	local entity = this.player();
+	if (entity ~= nil and entity.isControlled) then
+		entity.position.x = _entityServerPos.x;
+		entity.position.z = _entityServerPos.z;
+		Event.Brocast("updatePosition", entity);
+		entity.onUpdateVolatileData();
+	end
+end
+
+KBEngineLua.Client_onUpdateBaseDir = function(stream)
+	local x = stream:readFloat();
+	local y = stream:readFloat();
+	local z = stream:readFloat();
+
+	local entity = this.player();
+	if (entity ~= nil and entity.isControlled) then
+		entity.direction.x = x;
+		entity.direction.y = y;
+		entity.direction.z = z;
+		Event.Brocast("set_direction", entity);
+		entity.onUpdateVolatileData();
+	end
 end
 
 KBEngineLua.Client_onUpdateData = function(stream)
@@ -1107,7 +1226,7 @@ KBEngineLua.Client_onUpdateData_ypr = function(stream)
 	local p = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, y, p, r, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, y, p, r, -1);
 end
 
 KBEngineLua.Client_onUpdateData_yp = function(stream)
@@ -1117,7 +1236,7 @@ KBEngineLua.Client_onUpdateData_yp = function(stream)
 	local y = stream:readInt8();
 	local p = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, y, p, KBEngineLua.KBE_FLT_MAX, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, y, p, KBEngineLua.KBE_FLT_MAX, -1);
 end
 
 KBEngineLua.Client_onUpdateData_yr = function(stream)
@@ -1127,7 +1246,7 @@ KBEngineLua.Client_onUpdateData_yr = function(stream)
 	local y = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, y, KBEngineLua.KBE_FLT_MAX, r, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, y, KBEngineLua.KBE_FLT_MAX, r, -1);
 end
 
 KBEngineLua.Client_onUpdateData_pr = function(stream)
@@ -1137,7 +1256,7 @@ KBEngineLua.Client_onUpdateData_pr = function(stream)
 	local p = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, KBEngineLua.KBE_FLT_MAX, p, r, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, p, r, -1);
 end
 
 KBEngineLua.Client_onUpdateData_y = function(stream)
@@ -1146,7 +1265,7 @@ KBEngineLua.Client_onUpdateData_y = function(stream)
 	
 	local y = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, -1);
 end
 
 KBEngineLua.Client_onUpdateData_p = function(stream)
@@ -1155,7 +1274,7 @@ KBEngineLua.Client_onUpdateData_p = function(stream)
 	
 	local p = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, KBEngineLua.KBE_FLT_MAX, p, KBEngineLua.KBE_FLT_MAX, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, p, KBEngineLua.KBE_FLT_MAX, -1);
 end
 
 KBEngineLua.Client_onUpdateData_r = function(stream)
@@ -1164,7 +1283,7 @@ KBEngineLua.Client_onUpdateData_r = function(stream)
 	
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, 0.0, 0.0, 0.0, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, r, -1);
+	KBEngineLua._updateVolatileData(eid, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, r, -1);
 end
 
 KBEngineLua.Client_onUpdateData_xz = function(stream)
@@ -1173,7 +1292,7 @@ KBEngineLua.Client_onUpdateData_xz = function(stream)
 	
 	local xz = stream:readPackXZ();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_ypr = function(stream)
@@ -1186,7 +1305,7 @@ KBEngineLua.Client_onUpdateData_xz_ypr = function(stream)
 	local p = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, y, p, r, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, y, p, r, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_yp = function(stream)
@@ -1198,7 +1317,7 @@ KBEngineLua.Client_onUpdateData_xz_yp = function(stream)
 	local y = stream:readInt8();
 	local p = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, y, p, KBEngineLua.KBE_FLT_MAX, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, y, p, KBEngineLua.KBE_FLT_MAX, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_yr = function(stream)
@@ -1210,7 +1329,7 @@ KBEngineLua.Client_onUpdateData_xz_yr = function(stream)
 	local y = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, y, KBEngineLua.KBE_FLT_MAX, r, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, y, KBEngineLua.KBE_FLT_MAX, r, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_pr = function(stream)
@@ -1222,7 +1341,7 @@ KBEngineLua.Client_onUpdateData_xz_pr = function(stream)
 	local p = stream:readInt8();
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, KBEngineLua.KBE_FLT_MAX, p, r, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, KBEngineLua.KBE_FLT_MAX, p, r, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_y = function(stream)
@@ -1233,7 +1352,7 @@ KBEngineLua.Client_onUpdateData_xz_y = function(stream)
 
 	local y = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_p = function(stream)
@@ -1244,7 +1363,7 @@ KBEngineLua.Client_onUpdateData_xz_p = function(stream)
 
 	local p = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, KBEngineLua.KBE_FLT_MAX, p, KBEngineLua.KBE_FLT_MAX, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, KBEngineLua.KBE_FLT_MAX, p, KBEngineLua.KBE_FLT_MAX, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xz_r = function(stream)
@@ -1255,7 +1374,7 @@ KBEngineLua.Client_onUpdateData_xz_r = function(stream)
 
 	local r = stream:readInt8();
 	
-	KBEngineLua._updateVolatileData(eid, xz.x, 0.0, xz.y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, r, 1);
+	KBEngineLua._updateVolatileData(eid, xz.x, KBEngineLua.KBE_FLT_MAX, xz.y, KBEngineLua.KBE_FLT_MAX, KBEngineLua.KBE_FLT_MAX, r, 1);
 end
 
 KBEngineLua.Client_onUpdateData_xyz = function(stream)
@@ -1396,7 +1515,12 @@ KBEngineLua._updateVolatileData = function(entityID, x, y, z, yaw, pitch, roll, 
 		done = true;
 	end
 	
-	if(Mathf.Abs(x + y + z) > 0.00001) then
+	local positionChanged = x ~= KBEngineLua.KBE_FLT_MAX or y ~= KBEngineLua.KBE_FLT_MAX or z ~= KBEngineLua.KBE_FLT_MAX;
+	if (x == KBEngineLua.KBE_FLT_MAX) then x = 0.0; end
+	if (y == KBEngineLua.KBE_FLT_MAX) then y = 0.0; end
+	if (z == KBEngineLua.KBE_FLT_MAX) then z = 0.0; end
+            
+	if(positionChanged) then
 		entity.position.x = x + KBEngineLua.entityServerPos.x;
 		entity.position.y = y + KBEngineLua.entityServerPos.y;
 		entity.position.z = z + KBEngineLua.entityServerPos.z;
@@ -1436,6 +1560,7 @@ KBEngineLua.login_loginapp = function( noconnect )
 end
 
 KBEngineLua.onConnectTo_loginapp_callback = function( ip, port, success, userData)
+	this._lastTickCBTime = os.clock();
 	if not success then
 		log("KBEngine::login_loginapp(): connect ".. ip.. ":"..port.." is error!");  
 		return;
@@ -1447,6 +1572,62 @@ KBEngineLua.onConnectTo_loginapp_callback = function( ip, port, success, userDat
 	log("KBEngine::login_loginapp(): connect ".. ip.. ":"..port.." success!"); 
 
 	this.hello();	
+end
+
+KBEngineLua.onLogin_loginapp = function()
+	this._lastTickCBTime = os.clock();
+	if not this.loginappMessageImported_ then
+		local bundle = KBEngineLua.Bundle:New();
+		bundle:newMessage(KBEngineLua.messages["Loginapp_importClientMessages"]);
+		bundle:send();
+		log("KBEngine::onLogin_loginapp: send importClientMessages ...");
+	else
+		this.onImportClientMessagesCompleted();
+	end
+end
+
+-----登录到服务端，登录到网关(baseapp)
+KBEngineLua.login_baseapp = function(noconnect)
+	if(noconnect) then
+		--Event.fireOut("onLoginBaseapp", new object[]{});
+		this._networkInterface:reset();
+		this._networkInterface = KBEngine.NetworkInterface.New();
+		this._networkInterface:connectTo(this.baseappIP, this.baseappPort, this.onConnectTo_baseapp_callback, nil);
+	else
+		local bundle = KBEngineLua.Bundle:New();
+		bundle:newMessage(KBEngineLua.messages["Baseapp_loginBaseapp"]);
+		bundle:writeString(this.username);
+		bundle:writeString(this.password);
+		bundle:send();
+	end
+end
+
+KBEngineLua.onConnectTo_baseapp_callback = function(ip, port, success, userData)
+	this._lastTickCBTime = os.clock();
+	if not success then
+		log("KBEngine::login_baseapp(): connect "..ip..":"..port.." is error!");
+		return;
+	end
+	
+	this.currserver = "baseapp";
+	this.currstate = "";
+	
+	log("KBEngine::login_baseapp(): connect "..ip..":"..port.." is successfully!");
+
+	this.hello();
+end
+
+KBEngineLua.onLogin_baseapp = function()
+	this._lastTickCBTime = os.clock();
+	if not this.baseappMessageImported_ then
+		local bundle = KBEngineLua.Bundle:New();
+		bundle:newMessage(KBEngineLua.messages["Baseapp_importClientMessages"]);
+		bundle:send();
+		log("KBEngine::onLogin_baseapp: send importClientMessages ...");
+		--Event.fireOut("Baseapp_importClientMessages", new object[]{});
+	else
+		this.onImportClientMessagesCompleted();
+	end
 end
 
 KBEngineLua.hello = function()
@@ -1491,28 +1672,7 @@ KBEngineLua.onServerDigest = function()
 	end
 end
 
-KBEngineLua.onLogin_loginapp = function()
-	if not this.loginappMessageImported_ then
-		local bundle = KBEngineLua.Bundle:New();
-		bundle:newMessage(KBEngineLua.messages["Loginapp_importClientMessages"]);
-		bundle:send();
-		log("KBEngine::onLogin_loginapp: send importClientMessages ...");
-	else
-		this.onImportClientMessagesCompleted();
-	end
-end
 
-KBEngineLua.onLogin_baseapp = function()
-	if not this.baseappMessageImported_ then
-		local bundle = KBEngineLua.Bundle:New();
-		bundle:newMessage(KBEngineLua.messages["Baseapp_importClientMessages"]);
-		bundle:send();
-		log("KBEngine::onLogin_baseapp: send importClientMessages ...");
-		--Event.fireOut("Baseapp_importClientMessages", new object[]{});
-	else
-		this.onImportClientMessagesCompleted();
-	end
-end
 
 	--登录loginapp失败了
 KBEngineLua.Client_onLoginFailed = function(stream)
@@ -1537,38 +1697,10 @@ KBEngineLua.Client_onLoginSuccessfully = function(stream)
 end
 
 
------登录到服务端，登录到网关(baseapp)
-KBEngineLua.login_baseapp = function(noconnect)
-	if(noconnect) then
-		--Event.fireOut("onLoginBaseapp", new object[]{});
-		this._networkInterface:reset();
-		this._networkInterface = KBEngine.NetworkInterface.New();
-		this._networkInterface:connectTo(this.baseappIP, this.baseappPort, this.onConnectTo_baseapp_callback, nil);
-	else
-		local bundle = KBEngineLua.Bundle:New();
-		bundle:newMessage(KBEngineLua.messages["Baseapp_loginBaseapp"]);
-		bundle:writeString(this.username);
-		bundle:writeString(this.password);
-		bundle:send();
-	end
-end
 
-KBEngineLua.onConnectTo_baseapp_callback = function(ip, port, success, userData)
-	if not success then
-		log("KBEngine::login_baseapp(): connect "..ip..":"..port.." is error!");
-		return;
-	end
-	
-	this.currserver = "baseapp";
-	this.currstate = "";
-	
-	log("KBEngine::login_baseapp(): connect "..ip..":"..port.." is successfully!");
-
-	this.hello();
-end
 
 KBEngineLua.reset = function()
-	KBEngine.Event.clearFiredEvents();
+	--KBEngine.Event.clearFiredEvents();
 	KBEngineLua.clearEntities(true);
 
 	this.currserver = "";
@@ -1590,7 +1722,8 @@ KBEngineLua.reset = function()
 	this._networkInterface:reset();
 	this._networkInterface = KBEngine.NetworkInterface.New();
 
-	this._lastticktime = os.clock();
+	this._lastTickTime = os.clock();
+	this._lastTickCBTime = os.clock();
 	this._lastUpdateToServerTime = os.clock();
 
 	this.spacedata = {};
@@ -1603,6 +1736,7 @@ KBEngineLua.onOpenLoginapp_resetpassword = function()
 	log("KBEngine::onOpenLoginapp_resetpassword: successfully!");
 	this.currserver = "loginapp";
 	this.currstate = "resetpassword";
+	this._lastTickCBTime = os.clock();
 	
 	if(not this.loginappMessageImported_) then
 		local bundle = KBEngineLua.Bundle:New();
@@ -1636,6 +1770,8 @@ KBEngineLua.resetpassword_loginapp = function(noconnect)
 end
 
 KBEngineLua.onConnectTo_resetpassword_callback = function(ip, port, success, userData)
+	this._lastTickCBTime = os.clock();
+
 	if(not success) then
 		log("KBEngine::resetpassword_loginapp(): connect "..ip..":"..port.." is error!");
 		return;
@@ -1722,6 +1858,7 @@ KBEngineLua.onOpenLoginapp_createAccount = function()
 	log("KBEngine::onOpenLoginapp_createAccount: successfully!");
 	this.currserver = "loginapp";
 	this.currstate = "createAccount";
+	this._lastTickCBTime = os.clock();
 	
 	if( not this.loginappMessageImported_) then
 		local bundle = KBEngineLua.Bundle:New();
@@ -1734,6 +1871,8 @@ KBEngineLua.onOpenLoginapp_createAccount = function()
 end
 
 KBEngineLua.onConnectTo_createAccount_callback = function(ip, port, success, userData)
+	this._lastTickCBTime = os.clock();
+
 	if( not success) then
 		log("KBEngine::createAccount_loginapp(): connect "..ip..":"..port.." is error!");
 		return;
@@ -1781,11 +1920,12 @@ end
 --	一些移动类应用容易掉线，可以使用该功能快速的重新与服务端建立通信
 
 KBEngineLua.reLoginBaseapp = function()
-	--Event.fireAll("onReLoginBaseapp", new object[]{end);
+	--Event.fireAll("onReloginBaseapp", new object[]{end);
 	this._networkInterface:connectTo(this.baseappIP, this.baseappPort, this.onReConnectTo_baseapp_callback, nil);
 end
 
 KBEngineLua.onReConnectTo_baseapp_callback = function(ip, port, success, userData)
+
 	if not success then
 		log("KBEngine::reLoginBaseapp(): connect "..ip..":"..port.." is error!");
 		return;
@@ -1800,6 +1940,8 @@ KBEngineLua.onReConnectTo_baseapp_callback = function(ip, port, success, userDat
 	bundle:writeUint64(this.entity_uuid);
 	bundle:writeInt32(this.entity_id);
 	bundle:send();
+
+	this._lastTickCBTime = os.clock();
 end
 
 	--登录baseapp失败了
@@ -1809,16 +1951,16 @@ KBEngineLua.Client_onLoginBaseappFailed = function(failedcode)
 end
 
 	--重登录baseapp失败了
-KBEngineLua.Client_onReLoginBaseappFailed = function(failedcode)
-	log("KBEngine::Client_onReLoginBaseappFailed: failedcode(" .. failedcode .. ")!");
-	--Event.fireAll("onReLoginBaseappFailed", new object[]{failedcodeend);
+KBEngineLua.Client_onReloginBaseappFailed = function(failedcode)
+	log("KBEngine::Client_onReloginBaseappFailed: failedcode(" .. failedcode .. ")!");
+	--Event.fireAll("onReloginBaseappFailed", new object[]{failedcodeend);
 end
 
 	--登录baseapp成功了
-KBEngineLua.Client_onReLoginBaseappSuccessfully = function(stream)
+KBEngineLua.Client_onReloginBaseappSuccessfully = function(stream)
 	this.entity_uuid = stream:readUint64();
-	log("KBEngine::Client_onReLoginBaseappSuccessfully: name(" .. this.username .. ")!");
-	--Event.fireAll("onReLoginBaseappSuccessfully", new object[]{end);
+	log("KBEngine::Client_onReloginBaseappSuccessfully: name(" .. this.username .. ")!");
+	--Event.fireAll("onReloginBaseappSuccessfully", new object[]{end);
 end
 
 
@@ -1831,12 +1973,22 @@ KBEngineLua.sendTick = function()
 		return;
 	end
 	
-	local span = os.clock() - this._lastticktime; 
+	local span = os.clock() - this._lastTickTime; 
 	
 	-- 更新玩家的位置与朝向到服务端
 	this.updatePlayerToServer();
 	
 	if(span > 15) then
+		span = this._lastTickCBTime - this._lastTickTime;
+
+		-- 如果心跳回调接收时间小于心跳发送时间，说明没有收到回调
+		-- 此时应该通知客户端掉线了
+		if(span < 0) then
+			log("sendTick: Receive appTick timeout!");
+			this._networkInterface:close();
+			return;
+		end
+
 		local Loginapp_onClientActiveTickMsg = KBEngineLua.messages["Loginapp_onClientActiveTick"];
 		local Baseapp_onClientActiveTickMsg = KBEngineLua.messages["Baseapp_onClientActiveTick"];
 		
@@ -1854,10 +2006,17 @@ KBEngineLua.sendTick = function()
 			end
 		end
 		
-		this._lastticktime = os.clock();
+		this._lastTickTime = os.clock();
 	end
 end
 
+
+--
+--	服务器心跳回调
+--		
+KBEngineLua.Client_onAppActiveTickCB = function()
+	this._lastTickCBTime = os.clock();
+end
 
 	---插件的主循环处理函数
 

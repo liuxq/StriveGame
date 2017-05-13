@@ -3,7 +3,7 @@ Auth:Chiuan
 like Unity Brocast Event System in lua.
 ]]
 
-local EventLib = require "eventlib"
+local EventLib = require "KbePlugins/eventlib"
 
 local Event = {}
 local events = {}

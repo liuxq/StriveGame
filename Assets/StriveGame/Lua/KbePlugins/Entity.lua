@@ -20,6 +20,11 @@ KBEngineLua.Entity =
 	
 	-- enterworld之后设置为true
 	inWorld = false,
+
+
+	-- 对于玩家自身来说，它表示是否自己被其它玩家控制了；
+	-- 对于其它entity来说，表示我本机是否控制了这个entity
+	isControlled = false;
 	
 	-- __init__调用之后设置为true
 	inited = false,		
@@ -177,4 +182,10 @@ end
 
 
 KBEngineLua.Entity.onUpdateVolatileData = function(self)
+end
+
+
+-- 对于玩家自身来说，它表示是否自己被其它玩家控制了；
+-- 对于其它entity来说，表示我本机是否控制了这个entity
+KBEngineLua.Entity.onControlled = function(self, isControlled_)
 end

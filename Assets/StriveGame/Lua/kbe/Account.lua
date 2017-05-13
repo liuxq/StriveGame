@@ -71,9 +71,14 @@ function KBEngineLua.Account:onCreateAvatarResult(retcode, info)
 end
 
 function KBEngineLua.Account:onRemoveAvatar(dbid)
-    log("Account::onRemoveAvatar: dbid=" .. dbid);
+    log("Account::onRemoveAvatar: dbid=" .. tostring(dbid));
 
-    self.avatars[dbid] = nil;    
+
+    for k,v in pairs(self.avatars) do
+        if(k == dbid) then
+            self.avatars[k] = nil;
+        end
+    end
     -- ui event
     Event.Brocast("onRemoveAvatar", dbid, self.avatars);
 end

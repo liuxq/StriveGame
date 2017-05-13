@@ -1,4 +1,4 @@
-Event = require 'events'
+Event = require 'KbePlugins/events'
 require "Logic/CtrlManager"
 require "Common/functions"
 require "Controller/LoginCtrl"
