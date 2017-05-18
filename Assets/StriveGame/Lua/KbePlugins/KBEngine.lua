@@ -36,6 +36,9 @@ KBEngineLua.MAILBOX_TYPE_CELL = 0;
 KBEngineLua.MAILBOX_TYPE_BASE = 1;
 KBEngineLua.KBE_FLT_MAX	= 3.402823466e+38;
 
+------debug级别
+Dbg.debugLevel = DEBUGLEVEL.DEBUG;
+
 ----- player的相关信息
 -- 当前玩家的实体id与实体类别
 KBEngineLua.entity_uuid = nil;
@@ -124,7 +127,7 @@ end
 KBEngineLua.InitEngine = function()
 	this._networkInterface = KBEngine.NetworkInterface.New();
 	KBEngineLua.Message.bindFixedMessage();
-	this._persistentInfos = KBEngine.PersistentInfos.New(Util.DataPath);
+	this._persistentInfos = KBEngine.PersistentInfos.New(UnityEngine.Application.persistentDataPath);
 
 	FixedUpdateBeat:Add(this.process, this);
 end
@@ -501,8 +504,8 @@ KBEngineLua.onImportServerErrorsDescr = function(stream)
 		
 		local e = {};
 		e.id = stream:readUint16();
-		e.name = LuaHelper.ByteToUtf8(stream:readBlob());
-		e.descr = LuaHelper.ByteToUtf8(stream:readBlob());
+		e.name = KBELuaUtil.ByteToUtf8(stream:readBlob());
+		e.descr = KBELuaUtil.ByteToUtf8(stream:readBlob());
 		
 		this.serverErrs[e.id] = e;
 		--log("Client_onImportServerErrorsDescr: id=" + e.id + ", name=" + e.name + ", descr=" + e.descr);
@@ -1552,7 +1555,7 @@ KBEngineLua.login_loginapp = function( noconnect )
 		local bundle = KBEngineLua.Bundle:New();
 		bundle:newMessage(KBEngineLua.messages["Loginapp_login"]);
 		bundle:writeInt8(this.clientType);
-		bundle:writeBlob(LuaHelper.Utf8ToByte(this._clientdatas));
+		bundle:writeBlob(KBELuaUtil.Utf8ToByte(this._clientdatas));
 		bundle:writeString(this.username);
 		bundle:writeString(this.password);
 		bundle:send();
@@ -1642,7 +1645,7 @@ KBEngineLua.hello = function()
 
 	bundle:writeString(KBEngineLua.clientVersion);
 	bundle:writeString(KBEngineLua.clientScriptVersion);
-	bundle:writeBlob(LuaHelper.Utf8ToByte(KBEngineLua._encryptedKey));
+	bundle:writeBlob(KBELuaUtil.Utf8ToByte(KBEngineLua._encryptedKey));
 	bundle:send();
 end
 
@@ -1849,7 +1852,7 @@ KBEngineLua.createAccount_loginapp = function(noconnect)
 		bundle:newMessage(KBEngineLua.messages["Loginapp_reqCreateAccount"]);
 		bundle:writeString(this.username);
 		bundle:writeString(this.password);
-		bundle:writeBlob(LuaHelper.Utf8ToByte(this._clientdatas));
+		bundle:writeBlob(KBELuaUtil.Utf8ToByte(this._clientdatas));
 		bundle:send();
 	end
 end

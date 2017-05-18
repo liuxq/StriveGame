@@ -148,10 +148,11 @@ public static class CustomSettings
         _GT(typeof(ResourceManager)),		  
 
         //kbengine
-        //_GT(typeof(KBEngine.Event)),
         _GT(typeof(KBEngine.NetworkInterface)),
         _GT(typeof(KBEngine.MemoryStream)),
         _GT(typeof(KBEngine.PersistentInfos)),
+        _GT(typeof(KBEngine.KBELuaUtil)),
+
         _GT(typeof(EasyJoystick)),
         _GT(typeof(MovingJoystick)),
         _GT(typeof(NcEffectFlying)),

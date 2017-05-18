@@ -40,7 +40,6 @@ end
 function LoginCtrl.OnLogin(go)
 	local username = LoginPanel.inputUsername:GetComponent('InputField').text;
 	local pw = LoginPanel.inputPassword:GetComponent('InputField').text;
-	--KBEEvent.fireIn("login",username, pw, "lxqlogin");
 	KBEngineLua.login(username, pw, "lxq");
 end
 --注册--

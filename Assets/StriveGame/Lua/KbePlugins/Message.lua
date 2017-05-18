@@ -127,7 +127,7 @@ function KBEngineLua.MessageReader.process(datas, offset, length)
 	do
 		if(reader.state == KBEngineLua.READ_STATE_MSGID) then
 			if(length >= reader.expectSize) then
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
 				totallen = totallen + reader.expectSize;
 				reader.stream.wpos = reader.stream.wpos + reader.expectSize;
 				length = length - reader.expectSize;
@@ -149,14 +149,14 @@ function KBEngineLua.MessageReader.process(datas, offset, length)
 					reader.state = KBEngineLua.READ_STATE_BODY;
 				end
 			else
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
 				reader.stream.wpos = reader.stream.wpos + length;
 				reader.expectSize = reader.expectSize - length;
 				break;
 			end
 		elseif(reader.state == KBEngineLua.READ_STATE_MSGLEN) then
 			if(length >= reader.expectSize) then
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
 				totallen = totallen + reader.expectSize;
 				reader.stream.wpos = reader.stream.wpos + reader.expectSize;
 				length = length - reader.expectSize;
@@ -173,14 +173,14 @@ function KBEngineLua.MessageReader.process(datas, offset, length)
 					reader.expectSize = reader.msglen;
 				end
 			else
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
 				reader.stream.wpos = reader.stream.wpos + length;
 				reader.expectSize = reader.expectSize - length;
 				break;
 			end
 		elseif(reader.state == KBEngineLua.READ_STATE_MSGLEN_EX) then
 			if(length >= reader.expectSize) then
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, reader.expectSize);
 				totallen = totallen + reader.expectSize;
 				reader.stream.wpos = reader.stream.wpos + reader.expectSize;
 				length = length - reader.expectSize;
@@ -190,7 +190,7 @@ function KBEngineLua.MessageReader.process(datas, offset, length)
 				
 				reader.state = KBEngineLua.READ_STATE_BODY;
 			else
-				LuaHelper.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
+				KBELuaUtil.ArrayCopy(datas, totallen, reader.stream:data(), reader.stream.wpos, length);
 				reader.stream.wpos = reader.stream.wpos + length;
 				reader.expectSize = reader.expectSize - length;
 				break;

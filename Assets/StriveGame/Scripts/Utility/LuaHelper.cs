@@ -70,20 +70,5 @@ namespace LuaFramework {
             Debug.LogWarning("OnJsonCallback data:>>" + data + " lenght:>>" + data.Length);
             if (func != null) func.Call(data);
         }
-
-        public static byte[] Utf8ToByte(object utf8)
-        {
-            return System.Text.Encoding.UTF8.GetBytes((string)utf8);
-        }
-
-        public static string ByteToUtf8(byte[] bytes)
-        {
-            return System.Text.Encoding.UTF8.GetString(bytes);
-        }
-
-        public static void ArrayCopy(byte[] srcdatas, long srcLen, byte[] dstdatas, long dstLen, long len)
-        {
-            Array.Copy(srcdatas, srcLen, dstdatas, dstLen, len);
-        }
     }
 }

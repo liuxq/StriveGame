@@ -387,11 +387,11 @@ KBEngineLua.DATATYPE_UNICODE =
 	end,
 
 	createFromStream = function(self, stream)
-		return LuaHelper.ByteToUtf8(stream:readBlob());
+		return KBELuaUtil.ByteToUtf8(stream:readBlob());
 	end,
 	
 	addToStream = function(self, stream, v)
-		stream:writeBlob(LuaHelper.Utf8ToByte(v));
+		stream:writeBlob(KBELuaUtil.Utf8ToByte(v));
 	end,
 	
 	parseDefaultValStr = function(self, v)

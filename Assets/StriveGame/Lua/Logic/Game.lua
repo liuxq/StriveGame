@@ -1,8 +1,9 @@
 Event = require 'KbePlugins/events'
 require "Logic/CtrlManager"
+require "KbePlugins/Dbg"
+require "KbePlugins/KBEngine"
 require "Common/functions"
 require "Controller/LoginCtrl"
-require "KbePlugins/KBEngine"
 require "Kbe/Account"
 require "Logic/World"
 
