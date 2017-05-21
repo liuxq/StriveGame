@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2016 topameng(topameng@qq.com)
+Copyright (c) 2015-2017 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ using LuaInterface;
 using System.Collections;
 using System.IO;
 using System;
-#if UNITY_5_4
+#if UNITY_5
 using UnityEngine.SceneManagement;
 #endif
 
@@ -175,7 +175,7 @@ public class LuaClient : MonoBehaviour
         Instance = this;
         Init();
 
-#if UNITY_5_4
+#if UNITY_5_4_OR_NEWER
         SceneManager.sceneLoaded += OnSceneLoaded;
 #endif        
     }
@@ -204,7 +204,7 @@ public class LuaClient : MonoBehaviour
         }
     }
 
-#if UNITY_5_4
+#if UNITY_5_4_OR_NEWER
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         OnLevelLoaded(scene.buildIndex);
@@ -220,7 +220,7 @@ public class LuaClient : MonoBehaviour
     {
         if (luaState != null)
         {
-#if UNITY_5_4
+#if UNITY_5_4_OR_NEWER
         SceneManager.sceneLoaded -= OnSceneLoaded;
 #endif    
             LuaState state = luaState;

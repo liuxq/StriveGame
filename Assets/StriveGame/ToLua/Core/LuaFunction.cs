@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2016 topameng(topameng@qq.com)
+Copyright (c) 2015-2017 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,6 +59,11 @@ namespace LuaInterface
             }
 #endif
             base.Dispose();
+        }
+
+        public T ToDelegate<T>() where T: class
+        {
+            return DelegateFactory.CreateDelegate(typeof(T), this) as T;
         }
 
         public virtual int BeginPCall()
@@ -353,11 +358,16 @@ namespace LuaInterface
             luaState.PushArgs(args);
         }
 
-        public void PushByteBuffer(byte[] buffer)
+        public void PushByteBuffer(byte[] buffer, int len = -1)
         {
             try
             {
-                luaState.PushByteBuffer(buffer);
+                if (len == -1)
+                {
+                    len = buffer.Length;
+                }
+
+                luaState.PushByteBuffer(buffer, len);
                 ++argCount;
             }
             catch (Exception e)

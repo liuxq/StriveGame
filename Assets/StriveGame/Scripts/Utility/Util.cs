@@ -287,7 +287,7 @@ namespace LuaFramework {
                     return -1;
                 }
             }
-            string sourceDir = AppConst.FrameworkRoot + "/ToLua/Source/Generate/";
+            string sourceDir = AppConst.FrameworkRoot + "/Source/Generate/";
             if (!Directory.Exists(sourceDir)) {
                 return -2;
             } else {

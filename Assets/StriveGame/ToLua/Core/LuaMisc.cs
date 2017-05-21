@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2016 topameng(topameng@qq.com)
+Copyright (c) 2015-2017 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,13 +61,21 @@ namespace LuaInterface
     {        
         public LuaByteBuffer(IntPtr source, int len)
         {
-            buffer = new byte[len];            
+            buffer = new byte[len];
+            Length = len;
             Marshal.Copy(source, buffer, 0, len);
         }
         
         public LuaByteBuffer(byte[] buf)
         {
-            this.buffer = buf;            
+            buffer = buf;
+            Length = buf.Length;            
+        }
+
+        public LuaByteBuffer(byte[] buf, int len)
+        {            
+            buffer = buf;
+            Length = len;
         }
 
         public override bool Equals(object o)
@@ -121,7 +129,13 @@ namespace LuaInterface
             return buffer == null ? 0 : buffer.GetHashCode();
         }
 
-        public byte[] buffer = null;        
+        public byte[] buffer = null;    
+
+        public int Length
+        {
+            get;
+            private set;
+        }    
     }   
 
     public class LuaOut<T> { }
@@ -193,7 +207,7 @@ namespace LuaInterface
 
             if (l != null && r == null)
             {
-                return a.func == null && b.self == null;
+                return a.func == null && a.self == null;
             }
 
             if (a.func != b.func || a.self != b.self)

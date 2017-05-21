@@ -55,9 +55,7 @@ namespace LuaFramework {
         /// 初始化加载第三方库
         /// </summary>
         void OpenLibs() {
-            lua.OpenLibs(LuaDLL.luaopen_pb);      
-            lua.OpenLibs(LuaDLL.luaopen_sproto_core);
-            lua.OpenLibs(LuaDLL.luaopen_protobuf_c);
+            lua.OpenLibs(LuaDLL.luaopen_pb);
             lua.OpenLibs(LuaDLL.luaopen_lpeg);
             lua.OpenLibs(LuaDLL.luaopen_bit);
             lua.OpenLibs(LuaDLL.luaopen_socket_core);
