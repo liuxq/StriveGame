@@ -161,7 +161,7 @@ public static class CustomSettings
         //kbengine
         _GT(typeof(KBEngine.NetworkInterface)),
         _GT(typeof(KBEngine.MemoryStream)),
-        _GT(typeof(KBEngine.PersistentInfos)),
+        //_GT(typeof(KBEngine.PersistentInfos)),
         _GT(typeof(KBEngine.KBELuaUtil)),
 
         _GT(typeof(EasyJoystick)),

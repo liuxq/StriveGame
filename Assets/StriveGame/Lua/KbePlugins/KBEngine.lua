@@ -8,6 +8,7 @@ require "KbePlugins/Message"
 require "KbePlugins/Bundle"
 require "KbePlugins/Mailbox"
 require "KbePlugins/Entity"
+require "KbePlugins/PersistentInfos"
 require "Kbe/Account"
 require "Kbe/Avatar"
 require "Kbe/Gate"
@@ -127,8 +128,7 @@ end
 KBEngineLua.InitEngine = function()
 	this._networkInterface = KBEngine.NetworkInterface.New();
 	KBEngineLua.Message.bindFixedMessage();
-	this._persistentInfos = KBEngine.PersistentInfos.New(UnityEngine.Application.persistentDataPath);
-
+	this._persistentInfos = KBEngineLua.PersistentInfos:New(UnityEngine.Application.persistentDataPath);
 	FixedUpdateBeat:Add(this.process, this);
 end
 

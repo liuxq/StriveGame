@@ -59,14 +59,14 @@
 
 			if(_rpos < t_wpos)
 			{
-                LuaFramework.Util.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)_rpos, (UInt32)(t_wpos - _rpos) });
+                KBELuaUtil.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)_rpos, (UInt32)(t_wpos - _rpos) });
 				//messageReader.process(_buffer, (UInt32)_rpos, (UInt32)(t_wpos - _rpos));
 				Interlocked.Exchange(ref _rpos, t_wpos);
 			} 
 			else if(t_wpos < _rpos)
 			{
-                LuaFramework.Util.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)_rpos, (UInt32)(_buffer.Length - _rpos) });
-                LuaFramework.Util.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)0, (UInt32)t_wpos });
+                KBELuaUtil.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)_rpos, (UInt32)(_buffer.Length - _rpos) });
+                KBELuaUtil.CallMethod("KBEngineLua.MessageReader", "process", new object[] { _buffer, (UInt32)0, (UInt32)t_wpos });
 				//messageReader.process(_buffer, (UInt32)_rpos, (UInt32)(_buffer.Length - _rpos));
 				//messageReader.process(_buffer, (UInt32)0, (UInt32)t_wpos);
 				Interlocked.Exchange(ref _rpos, t_wpos);

@@ -37,7 +37,7 @@ public class KBEMain : MonoBehaviour
 
         KBEngine.Event.registerIn("_closeNetwork", this, "_closeNetwork");
 
-        LuaFramework.Util.CallMethod("KBEngineLua", "InitEngine");
+        KBELuaUtil.CallMethod("KBEngineLua", "InitEngine");
 	}
 
     public void _closeNetwork(NetworkInterface networkInterface)
@@ -51,7 +51,7 @@ public class KBEMain : MonoBehaviour
 
         Dbg.WARNING_MSG("KBEngine::destroy()");
         KBEngine.Event.deregisterIn(this);
-        LuaFramework.Util.CallMethod("KBEngineLua", "Destroy");
+        KBELuaUtil.CallMethod("KBEngineLua", "Destroy");
 
 		MonoBehaviour.print("clientapp::OnDestroy(): end");
 	}

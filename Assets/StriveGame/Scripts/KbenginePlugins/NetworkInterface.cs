@@ -107,7 +107,7 @@
 				Dbg.ERROR_MSG(string.Format("NetworkInterface::_onConnectionState(), connect is error! ip: {0}:{1}, err: {2}", state.connectIP, state.connectPort, state.error));
 			}
 
-            LuaFramework.Util.CallMethod("Event", "Brocast", new object[] { "onConnectionState", success });
+            KBELuaUtil.CallMethod("Event", "Brocast", new object[] { "onConnectionState", success });
 
 			if (state.connectCB != null)
 				state.connectCB(state.connectIP, state.connectPort, success, state.userData);
