@@ -16,6 +16,7 @@ namespace LuaFramework {
             this.OpenLibs();
             lua.LuaSetTop(0);
             KBELuaUtil.SetCallLuaFunction(this.CallFunction);
+            DelegateFactory.Init();
             LuaBinder.Bind(lua);
             LuaCoroutine.Register(lua, this);
         }
@@ -115,7 +116,7 @@ namespace LuaFramework {
         public object[] CallFunction(string funcName, params object[] args) {
             LuaFunction func = lua.GetFunction(funcName);
             if (func != null) {
-                return func.Call(args);
+                return func.LazyCall(args);
             }
             return null;
         }

@@ -105,7 +105,7 @@ public class Packager {
         string streamDir = Application.dataPath + "/" + AppConst.LuaTempDir;
         if (!Directory.Exists(streamDir)) Directory.CreateDirectory(streamDir);
 
-        string[] srcDirs = { CustomSettings.luaDir, CustomSettings.FrameworkPath + "/ToLua/Lua" };
+        string[] srcDirs = { CustomSettings.luaDir, CustomSettings.kbeLuaDir, CustomSettings.FrameworkPath + "/ToLua/Lua" };
         for (int i = 0; i < srcDirs.Length; i++) {
             if (AppConst.LuaByteMode) {
                 string sourceDir = srcDirs[i];
@@ -188,6 +188,7 @@ public class Packager {
             Directory.CreateDirectory(luaPath); 
         }
         string[] luaPaths = { AppDataPath + "/StriveGame/lua/", 
+                              AppDataPath + "/StriveGame/kbengine_unity3d_lua_plugins/Lua",
                               AppDataPath + "/StriveGame/Tolua/Lua/" };
 
         for (int i = 0; i < luaPaths.Length; i++) {
