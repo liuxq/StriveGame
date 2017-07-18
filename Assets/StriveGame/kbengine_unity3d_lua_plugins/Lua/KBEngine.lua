@@ -2,19 +2,14 @@
 KBEngineLua = {}
 local this = KBEngineLua;
 
-require "KbePlugins/LuaUtil"
-require "KbePlugins/DataType"
-require "KbePlugins/Message"
-require "KbePlugins/Bundle"
-require "KbePlugins/Mailbox"
-require "KbePlugins/Entity"
-require "KbePlugins/PersistentInfos"
-require "Kbe/Account"
-require "Kbe/Avatar"
-require "Kbe/Gate"
-require "Kbe/Monster"
-require "Kbe/NPC"
-require "Kbe/DroppedItem"
+require "LuaUtil"
+require "DataType"
+require "Message"
+require "Bundle"
+require "Mailbox"
+require "Entity"
+require "PersistentInfos"
+
 
 
 -----------------可配置信息---------------
@@ -1540,7 +1535,7 @@ end
 KBEngineLua.login = function( username, password, data )
 	KBEngineLua.username = username;
 	KBEngineLua.password = password;
-    KBEngineLua._clientdatas = 'lxq';
+    KBEngineLua._clientdatas = data;
 	
 	KBEngineLua.login_loginapp(true);
 end

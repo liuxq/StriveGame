@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using LuaInterface;
+using KBEngine;
 
 namespace LuaFramework {
     public class LuaManager : Manager {
@@ -14,7 +15,7 @@ namespace LuaFramework {
             lua = new LuaState();
             this.OpenLibs();
             lua.LuaSetTop(0);
-
+            KBELuaUtil.SetCallLuaFunction(this.CallFunction);
             LuaBinder.Bind(lua);
             LuaCoroutine.Register(lua, this);
         }
@@ -71,6 +72,7 @@ namespace LuaFramework {
                 string rootPath = AppConst.FrameworkRoot;
                 lua.AddSearchPath(rootPath + "/Lua");
                 lua.AddSearchPath(rootPath + "/ToLua/Lua");
+                lua.AddSearchPath(rootPath + "/kbengine_unity3d_lua_plugins/Lua");
             } else {
                 lua.AddSearchPath(Util.DataPath + "lua");
             }

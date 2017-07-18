@@ -29,7 +29,7 @@ KBEngineLua.Entity =
 	-- __init__调用之后设置为true
 	inited = false,		
 	renderObj = nil,
-	gameEntity = nil,
+	
 }
 
 KBEngineLua.Entity.New = function( self , me )

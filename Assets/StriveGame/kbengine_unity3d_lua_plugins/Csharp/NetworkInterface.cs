@@ -75,7 +75,7 @@
 			{
 				_socket.Close(0);
 				_socket = null;
-				Event.fireAll("onDisconnected", new object[]{});
+				//Event.fireAll("onDisconnected", new object[]{});
             }
 
             _socket = null;

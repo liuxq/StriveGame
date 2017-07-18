@@ -22,13 +22,7 @@ public class KBEMain : MonoBehaviour
 	void Start () 
 	{
 		MonoBehaviour.print("clientapp::start()");
-        KBEngine.Event.registerIn("onResourceInitFinish", this, "onResourceInitFinish");
 	}
-
-    public void onResourceInitFinish()
-    {
-        initKBEngine();
-    }
 	
 	public virtual void initKBEngine()
 	{
@@ -51,7 +45,6 @@ public class KBEMain : MonoBehaviour
 
         Dbg.WARNING_MSG("KBEngine::destroy()");
         KBEngine.Event.deregisterIn(this);
-        KBELuaUtil.CallMethod("KBEngineLua", "Destroy");
 
 		MonoBehaviour.print("clientapp::OnDestroy(): end");
 	}

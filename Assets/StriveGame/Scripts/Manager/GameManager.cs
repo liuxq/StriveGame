@@ -235,7 +235,11 @@ namespace LuaFramework {
             LuaManager.DoFile("Logic/Game");         //加载游戏
             Util.CallMethod("Game", "OnInitOK");     //初始化完成
 
-            KBEngine.Event.fireIn("onResourceInitFinish");
+            KBEMain km = GameObject.Find("ClientApp").GetComponent<KBEMain>();
+            if(km != null)
+            {
+                km.initKBEngine();
+            }
             initialize = true;
         }
 
