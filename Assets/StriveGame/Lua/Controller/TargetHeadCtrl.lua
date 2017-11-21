@@ -31,11 +31,15 @@ function TargetHeadCtrl.OnCreate(obj)
 end
 
 function  TargetHeadCtrl.SetHPMax(v)
-    TargetHeadPanel.sliderHp.maxValue = v;
+	if v then
+	    TargetHeadPanel.sliderHp.maxValue = v;
+	end
 end
 
 function  TargetHeadCtrl.SetHP(v)
-    TargetHeadPanel.sliderHp.value = v;
+	if v then
+    	TargetHeadPanel.sliderHp.value = v;
+    end
 end
 
 function  TargetHeadCtrl.SetName(v)
