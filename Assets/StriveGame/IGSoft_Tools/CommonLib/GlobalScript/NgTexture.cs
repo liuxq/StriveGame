@@ -215,7 +215,7 @@ public class NgTexture
 
 		if (bGUITexture)
 	 		 texImporter.textureType	= TextureImporterType.GUI;
-		else texImporter.textureType	= TextureImporterType.Image;
+		else texImporter.textureType	= TextureImporterType.Default;
 
 		texImporter.maxTextureSize		= maxTextureSize;
 		texImporter.textureFormat		= textureFormat;

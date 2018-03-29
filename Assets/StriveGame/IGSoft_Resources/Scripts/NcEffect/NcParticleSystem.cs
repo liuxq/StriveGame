@@ -327,9 +327,9 @@ public class NcParticleSystem : NcEffectBehaviour
 						if (m_ParticleDestruct == ParticleDestruct.WORLD_Y && pos.y <= m_fDestructPosY)
 							bDestect = true;
 
-						if (bDestect && 0 < m_BufColliderOriParts[n].lifetime)
+						if (bDestect && 0 < m_BufColliderOriParts[n].remainingLifetime)
 						{
-							m_BufColliderOriParts[n].lifetime = 0.0f;
+							m_BufColliderOriParts[n].remainingLifetime = 0.0f;
 							bUpdate				 = true;
 							CreateAttachPrefab(pos, m_BufColliderConParts[n].size * m_fPrefabScale);
 						}

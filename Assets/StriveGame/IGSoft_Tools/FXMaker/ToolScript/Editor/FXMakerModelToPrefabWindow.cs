@@ -84,7 +84,7 @@ public class FXMakerModelToPrefabWindow : EditorWindow
 		}
  		PrefabUtility.CreatePrefab(targetPath, (GameObject)modelNode.m_Object);
 		AssetDatabase.SaveAssets();
-		EditorApplication.SaveAssets();
+		AssetDatabase.SaveAssets();
 	}
 
 	public static NgAsset.ObjectNode[] GetModelList(string strDir, bool bRecursively)

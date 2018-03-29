@@ -146,6 +146,8 @@ function World.set_position( entity )
 end
 
 function World.set_direction( entity )
+	if entity.gameEntity == nil then return end
+
 	entity.gameEntity.m_destDirection = Vector3.New();
 	entity.gameEntity.m_destDirection.x = entity.direction.y * convertRad2Angle;
 	entity.gameEntity.m_destDirection.y = entity.direction.z * convertRad2Angle;
@@ -190,6 +192,7 @@ function World.set_HP_Max( entity , v)
 end
 
 function World.updatePosition( entity )
+	if entity.gameEntity == nil then return end
 	entity.gameEntity.m_destPosition = entity.position;
 end
 

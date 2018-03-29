@@ -138,7 +138,7 @@ public class FXMakerTextureConvertWindow : EditorWindow
 		{
 			if (m_bGUI)
 		 		 texImporter.textureType	= TextureImporterType.GUI;
-			else texImporter.textureType	= TextureImporterType.Image;
+			else texImporter.textureType	= TextureImporterType.Default;
 		}
 
 		if (m_bSetWrapMode)

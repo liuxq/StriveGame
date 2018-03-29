@@ -999,16 +999,13 @@ namespace LuaInterface
         }
     }
 
-    public class LuaDictEntry<K, V>
+    public struct LuaDictEntry<K, V>
     {
         public LuaDictEntry(K key, V value)
+            : this()
         {
             Key = key;
             Value = value;
-        }
-
-        public LuaDictEntry()
-        {
         }
 
         public K Key { get; set; }

@@ -148,7 +148,7 @@ public class FXMakerAsset
 		}
 		m_nTempSaveFrameIndex = FXMakerMain.inst.GetUnityFrameCount();
 		AssetDatabase.SaveAssets();
-		EditorApplication.SaveAssets();
+		AssetDatabase.SaveAssets();
 	}
 
 	// PingObject ---------------------------------------------------------------------------------------------------------------

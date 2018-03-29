@@ -152,6 +152,7 @@ end
 ------------事件--
 --死亡--
 function GameWorldCtrl.OnDie(v)
+	if GameWorldPanel.PanelDie == nil then return end
 	if v == 1 then
 		GameWorldPanel.PanelDie:SetActive(true);
 	else

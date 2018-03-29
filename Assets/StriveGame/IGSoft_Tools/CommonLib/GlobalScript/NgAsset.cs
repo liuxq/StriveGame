@@ -750,7 +750,7 @@ public class NgAsset
 		TextureImporterSettings settings = new TextureImporterSettings();
 		texImporter.ReadTextureSettings(settings);
 
- 		texImporter.textureType		= TextureImporterType.Image;
+ 		texImporter.textureType		= TextureImporterType.Default;
 		texImporter.wrapMode		= TextureWrapMode.Clamp;
 		texImporter.filterMode		= FilterMode.Bilinear;
 		texImporter.anisoLevel		= 0;

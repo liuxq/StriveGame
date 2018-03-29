@@ -44,14 +44,25 @@ public static class CustomSettings
         _DT(typeof(System.Action<int>)),
         _DT(typeof(System.Comparison<int>)),
         _DT(typeof(System.Func<int, int>)),
-        
     };
 
     //在这里添加你要导出注册到lua的类型列表
     public static BindType[] customTypeList =
     {                
-        _GT(typeof(Debugger)).SetNameSpace(null),
-                                       
+        //------------------------为例子导出--------------------------------
+        //_GT(typeof(TestEventListener)),
+        //_GT(typeof(TestProtol)),
+        //_GT(typeof(TestAccount)),
+        //_GT(typeof(Dictionary<int, TestAccount>)).SetLibName("AccountMap"),
+        //_GT(typeof(KeyValuePair<int, TestAccount>)),
+        //_GT(typeof(Dictionary<int, TestAccount>.KeyCollection)),
+        //_GT(typeof(Dictionary<int, TestAccount>.ValueCollection)),
+        //_GT(typeof(TestExport)),
+        //_GT(typeof(TestExport.Space)),
+        //-------------------------------------------------------------------        
+                        
+        _GT(typeof(Debugger)).SetNameSpace(null),          
+
 #if USING_DOTWEENING
         _GT(typeof(DG.Tweening.DOTween)),
         _GT(typeof(DG.Tweening.Tween)).SetBaseType(typeof(System.Object)).AddExtendType(typeof(DG.Tweening.TweenExtensions)),
@@ -138,8 +149,9 @@ public static class CustomSettings
         _GT(typeof(QualitySettings)),
         _GT(typeof(RenderSettings)),                                                   
         _GT(typeof(BlendWeights)),           
-        _GT(typeof(RenderTexture)),    
-		_GT(typeof(Resources)),   
+        _GT(typeof(RenderTexture)),
+        _GT(typeof(Resources)),     
+        _GT(typeof(LuaProfiler)),
           
         //for LuaFramework
         _GT(typeof(RectTransform)),
@@ -254,4 +266,7 @@ public static class CustomSettings
     {
         return new DelegateType(t);
     }    
+
+
+    
 }

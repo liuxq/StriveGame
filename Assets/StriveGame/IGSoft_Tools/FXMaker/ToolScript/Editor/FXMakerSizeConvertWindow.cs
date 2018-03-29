@@ -80,7 +80,7 @@ public class FXMakerSizeConvertWindow : EditorWindow
 		GameObject	loadPrefab = NgAsset.LoadPrefab(assetPath);
 		loadPrefab.transform.localScale *= m_fScale;
 		AssetDatabase.SaveAssets();
-		EditorApplication.SaveAssets();
+		AssetDatabase.SaveAssets();
 	}
 
 // 	void ConvertToStaticScale(GameObject targetPrefab)

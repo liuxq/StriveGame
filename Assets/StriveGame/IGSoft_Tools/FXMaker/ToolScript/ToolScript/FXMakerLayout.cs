@@ -13,7 +13,7 @@ public class FXMakerLayout : NgLayout
 	protected	static float	m_fFixedWindowWidth			= -1;
 	protected	static float	m_fTopMenuHeight			= -1;
 	protected	static bool		m_bLastStateTopMenuMini		= false;
-	// ½ºÅ©¸°Á¤º¸
+	// ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #if UNITY_ANDROID
 #endif
 #if UNITY_IPHONE
@@ -35,7 +35,7 @@ public class FXMakerLayout : NgLayout
 	public		const int		m_nThumbCaptureSize			= 512;
 	public		const int		m_nThumbImageSize			= 128;
 
-	// ÁÂÇ¥Á¤º¸
+	// ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½
 #if UNITY_EDITOR
 	public		static float	GetFixedWindowWidth()		{ if (m_fFixedWindowWidth < 0) m_fFixedWindowWidth = UnityEditor.EditorPrefs.GetFloat("FXMakerOption.m_fFixedWindowWidth", 115); return m_fFixedWindowWidth; }
 	public		static float	GetTopMenuHeight()			{ if (m_fTopMenuHeight < 0 || m_bLastStateTopMenuMini != (m_bMinimizeAll||m_bMinimizeTopMenu)) { m_bLastStateTopMenuMini = (m_bMinimizeAll||m_bMinimizeTopMenu); m_fTopMenuHeight = (m_bMinimizeAll||m_bMinimizeTopMenu ? m_MinimizeHeight : UnityEditor.EditorPrefs.GetFloat("FXMakerOption.m_fTopMenuHeight", 92)); } return m_fTopMenuHeight; }
@@ -198,13 +198,13 @@ public class FXMakerLayout : NgLayout
 		 {
 			 GUI.depth = 0;
 			 // first get a control id. every subsequent call to GUI control function will get a larger id 
-			 int min = GUIUtility.GetControlID(FocusType.Native);
+			 int min = GUIUtility.GetControlID(FocusType.Passive);
 			 // we can use the id to check if current control is inside our window
 			 if (GUIUtility.hotControl < min)
 				 setHotControl(0);
 			 // draw the window
 			 func(id);
-			 int max = GUIUtility.GetControlID(FocusType.Native);
+			 int max = GUIUtility.GetControlID(FocusType.Passive);
 			 if (GUIUtility.hotControl < min || (GUIUtility.hotControl > max && max != -1))
 				 setHotControl(-1);
  			 GUI.FocusWindow(id);
