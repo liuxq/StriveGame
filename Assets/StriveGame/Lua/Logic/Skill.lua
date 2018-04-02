@@ -49,7 +49,7 @@ function Skill:displaySkill(caster, target)
     if (self.displayType == 1) then
         resMgr:LoadPrefab('Skill', { self.skillEffect }, function(objs)
 			local renderObj = newObject(objs[0]);
-			local fly = renderObj:GetComponent("NcEffectFlying");
+			local fly = renderObj:GetComponent("EffectFlying");
 	        fly.FromPos = Vector3.New(caster.position.x, caster.position.y+1, caster.position.z);
 	        fly.ToPos = Vector3.New(target.position.x, target.position.y+1, target.position.z);
 	        --fly.Speed = 5.0f;

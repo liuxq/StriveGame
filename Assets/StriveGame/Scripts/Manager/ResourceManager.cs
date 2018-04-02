@@ -63,8 +63,9 @@ namespace LuaFramework {
                 return abName;
             }
             abName = abName.ToLower();
-            if (!abName.EndsWith(AppConst.ExtName)) {
-                abName += AppConst.ExtName;
+            if (!abName.EndsWith(AppConst.BundleExt))
+            {
+                abName += AppConst.BundleExt;
             }
             if (abName.Contains("/")) {
                 return abName;

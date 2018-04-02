@@ -79,37 +79,37 @@ function KBEngineLua.Avatar:onAddSkill(skillID)
     if skillID == 1 then
         skill.displayType = 1;
         skill.canUseDistMax = 30;
-        skill.skillEffect = "skill1";
+        skill.skillEffect = "Ice1";
         skill.name = "魔法球";
     elseif skillID == 2 then
         skill.displayType = 1;
         skill.canUseDistMax = 30;
-        skill.skillEffect = "skill2";
+        skill.skillEffect = "Fire1";
         skill.name = "火球";
     elseif skillID == 3 then
         skill.displayType = 1;
         skill.canUseDistMax = 20;
-        skill.skillEffect = "skill3";
+        skill.skillEffect = "Medical1";
         skill.name = "治疗";
     elseif skillID == 4 then
         skill.displayType = 0;
         skill.canUseDistMax = 5;
-        skill.skillEffect = "skill4";
+        skill.skillEffect = "MagicEffect1";
         skill.name = "斩击";
     elseif skillID == 5 then
         skill.displayType = 0;
         skill.canUseDistMax = 5;
-        skill.skillEffect = "skill5";
+        skill.skillEffect = "LightningEffect1";
         skill.name = "挥击";
     elseif skillID == 6 then
         skill.displayType = 0;
         skill.canUseDistMax = 5;
-        skill.skillEffect = "skill6";
+        skill.skillEffect = "BloodEffect1";
         skill.name = "吸血";
     else
         skill.displayType = 0;
         skill.canUseDistMax = 5;
-        skill.skillEffect = "skill6";
+        skill.skillEffect = "";
         skill.name = "未知";
     end;
 

@@ -181,7 +181,7 @@ public static class CustomSettings
 
         _GT(typeof(EasyJoystick)),
         _GT(typeof(MovingJoystick)),
-        _GT(typeof(NcEffectFlying)),
+        _GT(typeof(EffectFlying)),
         
     };
 

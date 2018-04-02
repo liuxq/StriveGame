@@ -24,7 +24,7 @@ namespace LuaFramework {
         /// <param name="type"></param>
         public void CreatePanel(string name, LuaFunction func = null) {
             string assetName = name + "Panel";
-            string abName = name.ToLower() + AppConst.ExtName;
+            string abName = name.ToLower() + AppConst.BundleExt;
             if (Parent.FindChild(name) != null) return;
 
 #if ASYNC_MODE

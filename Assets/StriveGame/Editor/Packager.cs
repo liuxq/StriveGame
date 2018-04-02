@@ -22,14 +22,6 @@ public class Packager {
         return false;
     }
 
-    /// <summary>
-    /// 载入素材
-    /// </summary>
-    static UnityEngine.Object LoadAsset(string file) {
-        if (file.EndsWith(".lua")) file += ".txt";
-        return AssetDatabase.LoadMainAssetAtPath("Assets/StriveGame/Examples/Builds/" + file);
-    }
-
     [MenuItem("LuaFramework/Build iPhone Resource", false, 100)]
     public static void BuildiPhoneResource() {
         BuildTarget target;
@@ -86,7 +78,7 @@ public class Packager {
     }
 
     static void AddBuildMap(string bundleName, string pattern, string path) {
-        string[] files = Directory.GetFiles(path, pattern);
+        string[] files = Directory.GetFiles(path, pattern, SearchOption.AllDirectories);
         if (files.Length == 0) return;
 
         for (int i = 0; i < files.Length; i++) {
@@ -130,12 +122,12 @@ public class Packager {
         for (int i = 0; i < dirs.Length; i++) {
             string name = dirs[i].Replace(streamDir, string.Empty);
             name = name.Replace('\\', '_').Replace('/', '_');
-            name = "lua/lua_" + name.ToLower() + AppConst.ExtName;
+            name = "lua/lua_" + name.ToLower() + AppConst.BundleExt;
 
             string path = "Assets" + dirs[i].Replace(Application.dataPath, "");
             AddBuildMap(name, "*.bytes", path);
         }
-        AddBuildMap("lua/lua" + AppConst.ExtName, "*.bytes", "Assets/" + AppConst.LuaTempDir);
+        AddBuildMap("lua/lua" + AppConst.BundleExt, "*.bytes", "Assets/" + AppConst.LuaTempDir);
 
         //-------------------------------处理非Lua文件----------------------------------
         string luaPath = AppDataPath + "/StreamingAssets/lua/";
@@ -164,16 +156,16 @@ public class Packager {
         string resPath = AppDataPath + "/" + AppConst.AssetDir + "/";
         if (!Directory.Exists(resPath)) Directory.CreateDirectory(resPath);
 
-        AddBuildMap("CreateAvatar" + AppConst.ExtName, "CreateAvatarPanel.prefab", "Assets/StriveGame/Res/View");
-        AddBuildMap("Login" + AppConst.ExtName, "LoginPanel.prefab", "Assets/StriveGame/Res/View");
-        AddBuildMap("SelectAvatar" + AppConst.ExtName, "SelectAvatarPanel.prefab", "Assets/StriveGame/Res/View");
-        AddBuildMap("GameWorld" + AppConst.ExtName, "GameWorldPanel.prefab", "Assets/StriveGame/Res/View");
-        AddBuildMap("PlayerHead" + AppConst.ExtName, "PlayerHeadPanel.prefab", "Assets/StriveGame/Res/View");
-        AddBuildMap("TargetHead" + AppConst.ExtName, "TargetHeadPanel.prefab", "Assets/StriveGame/Res/View");
+        AddBuildMap("CreateAvatar" + AppConst.BundleExt, "CreateAvatarPanel.prefab", "Assets/StriveGame/Resources/View");
+        AddBuildMap("Login" + AppConst.BundleExt, "LoginPanel.prefab", "Assets/StriveGame/Resources/View");
+        AddBuildMap("SelectAvatar" + AppConst.BundleExt, "SelectAvatarPanel.prefab", "Assets/StriveGame/Resources/View");
+        AddBuildMap("GameWorld" + AppConst.BundleExt, "GameWorldPanel.prefab", "Assets/StriveGame/Resources/View");
+        AddBuildMap("PlayerHead" + AppConst.BundleExt, "PlayerHeadPanel.prefab", "Assets/StriveGame/Resources/View");
+        AddBuildMap("TargetHead" + AppConst.BundleExt, "TargetHeadPanel.prefab", "Assets/StriveGame/Resources/View");
 
-        AddBuildMap("Model" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Model");
-        AddBuildMap("Skill" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Skill");
-        AddBuildMap("Terrain" + AppConst.ExtName, "*.prefab", "Assets/StriveGame/Res/Terrain");
+        AddBuildMap("Model" + AppConst.BundleExt, "*.prefab", "Assets/StriveGame/Resources/Model");
+        AddBuildMap("Skill" + AppConst.BundleExt, "*.prefab", "Assets/StriveGame/Resources/Effect/Prefab");
+        AddBuildMap("Terrain" + AppConst.BundleExt, "*.prefab", "Assets/StriveGame/Resources/Terrain");
     }
 
     /// <summary>
@@ -304,34 +296,6 @@ public class Packager {
         Process pro = Process.Start(info);
         pro.WaitForExit();
         Directory.SetCurrentDirectory(currDir);
-    }
-
-    [MenuItem("LuaFramework/Build Protobuf-lua-gen File")]
-    public static void BuildProtobufFile() {
-        string dir = AppDataPath + "/Lua/3rd/pblua";
-        paths.Clear(); files.Clear(); Recursive(dir);
-
-        string protoc = "d:/protobuf-2.4.1/src/protoc.exe";
-        string protoc_gen_dir = "\"d:/protoc-gen-lua/plugin/protoc-gen-lua.bat\"";
-
-        foreach (string f in files) {
-            string name = Path.GetFileName(f);
-            string ext = Path.GetExtension(f);
-            if (!ext.Equals(".proto")) continue;
-
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = protoc;
-            info.Arguments = " --lua_out=./ --plugin=protoc-gen-lua=" + protoc_gen_dir + " " + name;
-            info.WindowStyle = ProcessWindowStyle.Hidden;
-            info.UseShellExecute = true;
-            info.WorkingDirectory = dir;
-            info.ErrorDialog = true;
-            Util.Log(info.FileName + " " + info.Arguments);
-
-            Process pro = Process.Start(info);
-            pro.WaitForExit();
-        }
-        AssetDatabase.Refresh();
     }
 
     [MenuItem("Lua/Attach Profiler", false, 151)]
