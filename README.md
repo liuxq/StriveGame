@@ -12,6 +12,10 @@
 * 服务器脚本在：[MyGameServerAssets](https://github.com/liuxq/MyGameServerAssets.git)
 //
 
+//-------------2018-6-24-------------
+
+升级kbe到2.0
+
 //-------------2018-3-29-------------
 
 升级kbe到1.1.5, 升级tolua到1.0.7.337， 升级unity到5.6.0
